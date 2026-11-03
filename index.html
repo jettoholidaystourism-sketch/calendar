@@ -1,0 +1,2553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Concerts, shows, festivals, family days and offers across the UAE, picked by JTH Tourism.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>JTH UAE Calendar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a navy masthead band, then a sticky filter bar over a date-grouped agenda (or month grid) of event rows. */
+:root{
+  --bg:#F7F6F2; --surface:#FFFFFF; --ink:#141A26; --muted:#5E6573; --line:#E4E1D6;
+  --navy:#111827; --gold:#D4AF37; --gold-ink:#8A6A0F; --gold-soft:#FBF5E1; --gold-line:#EBDDA8;
+  --free:#1F7A4D; --free-soft:#E5F4EC; --warn:#9A5B00; --warn-soft:#FFF4DF;
+  --mast-ink:#F3F0E6; --mast-muted:#B8B39F;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E131D; --surface:#161D2A; --ink:#ECE9E0; --muted:#A3A8B3; --line:#283244;
+  --navy:#0A0E16; --gold-ink:#E9CC6B; --gold-soft:#2E2817; --gold-line:#5C4C1E;
+  --free:#6FD39F; --free-soft:#163325; --warn:#F2B25C; --warn-soft:#33260F; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E131D; --surface:#161D2A; --ink:#ECE9E0; --muted:#A3A8B3; --line:#283244;
+  --navy:#0A0E16; --gold-ink:#E9CC6B; --gold-soft:#2E2817; --gold-line:#5C4C1E;
+  --free:#6FD39F; --free-soft:#163325; --warn:#F2B25C; --warn-soft:#33260F; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body)}
+a{color:var(--gold-ink)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--bg)}
+
+/* masthead */
+.mast{background:var(--navy);color:var(--mast-ink)}
+.mast .wrap{padding-block:28px 26px;display:grid;gap:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand b{display:block;font-weight:700;letter-spacing:.3px}
+.brand small{display:block;color:var(--gold);font-size:11px;letter-spacing:1.6px;text-transform:uppercase}
+.mast h1{font:400 clamp(30px,5.4vw,50px)/1.08 var(--display);margin:0;text-wrap:balance;max-width:20ch}
+.mast h1 em{font-style:normal;color:var(--gold)}
+.mast p{margin:0;color:var(--mast-muted);max-width:62ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--mast-muted)}
+.stats b{color:var(--mast-ink);font-variant-numeric:tabular-nums}
+
+/* trust note */
+.note{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent);border-radius:10px;padding:10px 14px;font-size:13.5px;margin-block:18px 0}
+.note b{color:inherit}
+
+/* filter bar */
+.bar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{padding-block:12px;display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.search{flex:1 1 220px;min-width:0;height:40px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:0 12px;font:inherit}
+select{height:40px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:0 10px;font:inherit}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--muted);font:600 13.5px var(--body);padding:0 14px;height:38px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#F3F0E6}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:5px 12px;font:500 13px var(--body);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--gold-soft);border-color:var(--gold);color:var(--gold-ink);font-weight:700}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--gold);width:16px;height:16px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* agenda */
+main .wrap{padding-block:8px 40px}
+.group{display:grid;grid-template-columns:92px 1fr;gap:4px 20px;padding-block:18px;border-bottom:1px solid var(--line)}
+.gdate{position:sticky;top:150px;align-self:start}
+.gdate .dow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-ink);font-weight:700}
+.gdate .day{font:400 34px/1 var(--display)}
+.gdate .mon{font-size:13px;color:var(--muted)}
+.gdate .rel{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;background:var(--gold);color:#111827;border-radius:6px;padding:1px 7px}
+.glabel{font:400 22px/1.2 var(--display)}
+.items{display:grid;gap:12px;min-width:0}
+.ev{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;min-width:0}
+.ev h3{margin:0;font:700 16.5px/1.3 var(--body);text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:var(--muted)}
+.meta span{display:inline-flex;gap:5px;align-items:baseline}
+.meta svg{width:13px;height:13px;flex:none;align-self:center;fill:none;stroke:currentColor;stroke-width:2}
+.ev p{margin:0;font-size:14px;max-width:70ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.tag{font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.tag.price{background:var(--gold-soft);color:var(--gold-ink);border-color:var(--gold-line)}
+.tag.free{background:var(--free-soft);color:var(--free);border-color:transparent}
+.tag.cat{color:var(--ink)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:4px}
+.foot{align-items:center}
+.foot .ask{font-weight:700;text-decoration:none;background:var(--gold);color:#111827;border-radius:8px;padding:6px 12px}
+.foot .ask:hover{background:color-mix(in srgb,var(--gold) 85%,#000)}
+.ok{color:var(--free);font-weight:600}
+.empty{padding:40px 0;text-align:center;color:var(--muted)}
+
+/* month */
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:18px 10px}
+.mhead h2{margin:0;font:400 26px var(--display)}
+.mhead button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;height:38px;min-width:42px;font:600 16px var(--body);cursor:pointer}
+.mhead button:disabled{opacity:.35;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.grid .wd{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:center;padding-bottom:4px}
+.cell{aspect-ratio:1/0.9;max-width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;color:var(--ink);font:inherit;text-align:left}
+.cell.out{visibility:hidden}
+.cell.past{opacity:.4;cursor:default}
+.cell .n{font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+.cell .c{font-size:11.5px;color:var(--gold-ink);font-weight:700}
+.cell.today{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.cell[aria-pressed="true"]{background:var(--navy);color:#F3F0E6;border-color:var(--navy)}
+.cell[aria-pressed="true"] .c{color:var(--gold)}
+.dots{display:flex;gap:2px;flex-wrap:wrap}
+.dots i{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.daylist{padding-top:8px}
+
+/* JTH band */
+.jth{background:var(--navy);color:var(--mast-ink)}
+.jth .wrap{padding-block:26px;display:flex;flex-wrap:wrap;gap:14px 30px;align-items:center;justify-content:space-between}
+.jth h2{margin:0 0 4px;font:400 22px var(--display);color:var(--gold)}
+.jth p{margin:0;color:var(--mast-muted);max-width:56ch;font-size:14px}
+.jth a.cta{display:inline-block;background:var(--gold);color:#111827;font-weight:700;text-decoration:none;border-radius:10px;padding:10px 16px}
+.contact{display:grid;gap:6px;min-width:0}
+.wa-label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mast-muted)}
+.wa-num{font:400 26px/1.1 var(--display);color:var(--mast-ink);user-select:all;font-variant-numeric:tabular-nums}
+.jth .copy{border:1px solid var(--gold);background:transparent;color:var(--gold);font:600 14px var(--body);border-radius:10px;padding:9px 14px;cursor:pointer}
+.jth .site{color:var(--mast-muted);font-size:14px;align-self:center}
+.small{font-size:12px;color:var(--muted);padding-block:16px 28px}
+
+@media (max-width:640px){
+  .group{grid-template-columns:1fr;gap:10px}
+  .gdate{position:static;display:flex;align-items:baseline;gap:8px}
+  .gdate .day{font-size:24px}
+  .gdate .rel{margin:0}
+  .cell{aspect-ratio:auto;min-height:52px;padding:4px}
+  .cell .c{font-size:10.5px}
+}
+@media (prefers-reduced-motion:no-preference){.ev{transition:border-color .15s}.ev:hover{border-color:var(--gold-line)}}
+</style>
+</head>
+<body>
+
+
+<header class="mast">
+  <div class="wrap">
+    <div class="brand"><img alt="JTH Tourism logo" src="data:image/webp;base64,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"><div><b>JTH Tourism</b><small>UAE Calendar</small></div></div>
+    <h1>What's on in the UAE, <em>picked for our guests</em></h1>
+    <p>Concerts, shows, festivals, family days and seasonal offers across the Emirates. Pick a date or filter by what you like, then message JTH Tourism on WhatsApp (+971 54 247 4274) if you want tickets or a private car.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="wrap"><div class="note" role="note"><span aria-hidden="true">ⓘ</span><span>Times, prices and availability can change, so please confirm before you book.</span></div></div>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="row">
+      <input id="q" class="search" type="search" placeholder="Search events, venues, artists" aria-label="Search events">
+      <select id="em" aria-label="Emirate">
+        <option value="">All Emirates</option>
+        <option>Dubai</option><option>Abu Dhabi</option><option>Sharjah</option><option>Ras Al Khaimah</option>
+      </select>
+      <div class="seg" role="group" aria-label="View">
+        <button id="vAgenda" aria-pressed="true">List</button>
+        <button id="vMonth" aria-pressed="false">Month</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="chips" id="cats" role="group" aria-label="Category"></div>
+    </div>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="fFam"> Good for families</label>
+      <label class="toggle"><input type="checkbox" id="fFree"> Free entry</label>
+      <label class="toggle"><input type="checkbox" id="fWeek"> Next 7 days</label>
+    </div>
+  </div>
+</div>
+
+<main><div class="wrap" id="out"></div></main>
+
+<section class="jth">
+  <div class="wrap">
+    <div>
+      <h2>Getting there with JTH</h2>
+      <p>Private sedans, family vans and coaches with a driver, from your hotel to the door and back. Send us the event name, date and number of guests on WhatsApp and we will quote the ride, and help with tickets where we can.</p>
+    </div>
+    <div class="contact">
+      <span class="wa-label">WhatsApp JTH Tourism</span>
+      <span class="wa-num" id="waNum">+971 54 247 4274</span>
+      <div class="row">
+        <a class="cta" href="https://wa.me/971542474274?text=Hi%20JTH%2C%20I%20saw%20an%20event%20on%20your%20UAE%20Calendar" target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <button class="copy" id="waCopy" type="button">Copy number</button>
+        <a class="site" href="https://jthtourism.com" target="_blank" rel="noopener">jthtourism.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="wrap small">Event details can change without notice. JTH Tourism is not the organiser of these events.</div>
+
+<script>
+const EVENTS = [
+{
+"t": "Turkish Breakfast Experience at Bebek Restaurant & Lounge",
+"s": "2026-09-25",
+"e": "2026-11-30",
+"em": "Dubai",
+"v": "Bebek Restaurant",
+"price": "From AED 49",
+"cat": "Food",
+"ref": "J001"
+},
+{
+"t": "Luxury Breakfast Buffet at Gastronomy Atlantis The Royal",
+"s": "2026-09-26",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Gastronomy, Atlantis The Royal",
+"price": "From AED 187.5",
+"cat": "Food",
+"ref": "J002"
+},
+{
+"t": "Premium Business Lunch at Bebek Restaurant & Lounge",
+"s": "2026-09-26",
+"e": "2026-11-30",
+"em": "Dubai",
+"v": "Bebek Restaurant",
+"price": "From AED 79",
+"cat": "Food",
+"ref": "J003"
+},
+{
+"t": "Signature Afternoon Tea at Peacock Alley DIFC",
+"s": "2026-09-26",
+"e": "2026-11-30",
+"em": "Dubai",
+"v": "Peacock Alley",
+"price": "From AED 225",
+"cat": "Food",
+"ref": "J004"
+},
+{
+"t": "Steak Saturdays at Bull & Bear, Waldorf Astoria DIFC",
+"s": "2026-09-26",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 200",
+"cat": "Music",
+"ref": "J005"
+},
+{
+"t": "Ariana's Persian Kitchen Lunch at Atlantis the Royal Dubai",
+"s": "2026-09-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Ariana's Persian Kitchen",
+"price": "From AED 270",
+"cat": "Food",
+"ref": "J006"
+},
+{
+"t": "DREAM Dinner Show Dubai",
+"s": "2026-09-30",
+"e": "2027-02-06",
+"em": "Dubai",
+"v": "DREAM, Address Beach Resort",
+"price": "From AED 800",
+"cat": "Comedy & Theatre",
+"ref": "J007"
+},
+{
+"t": "Sahar Al Layali - Arabic Live Music at Bebek Restaurant & Lounge",
+"s": "2026-09-30",
+"e": "2026-11-25",
+"em": "Dubai",
+"v": "Bebek Restaurant",
+"price": "From AED 150",
+"cat": "Food",
+"ref": "J008"
+},
+{
+"t": "Wellington Wednesdays at Bull & Bear, Waldorf Astoria DIFC",
+"s": "2026-09-30",
+"e": "2026-11-25",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 250",
+"cat": "Food",
+"ref": "J009"
+},
+{
+"t": "La Perle Live Show: A jaw-dropping underwater & aerial display Dubai",
+"s": "2026-10-01",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "Al Habtoor City",
+"price": "From AED 176",
+"cat": "Comedy & Theatre",
+"fam": 1,
+"ref": "J010"
+},
+{
+"t": "PLUMA Circus Spectacular",
+"s": "2026-10-01",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Dubai Festival City Mall",
+"price": "From AED 100",
+"cat": "Family",
+"fam": 1,
+"ref": "J011"
+},
+{
+"t": "Turkish Night at Bebek Restaurant and Lounge",
+"s": "2026-10-01",
+"e": "2026-11-26",
+"em": "Dubai",
+"v": "Bebek Restaurant",
+"price": "From AED 150",
+"cat": "Food",
+"ref": "J012"
+},
+{
+"t": "Brunch at Bisou Bisou by FIVE LUXE JBR",
+"s": "2026-10-03",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "Five Luxe JBR",
+"price": "From AED 350",
+"cat": "Food",
+"ref": "J013"
+},
+{
+"t": "Call of the Jungle - Saturday Brunch at African Queen",
+"s": "2026-10-03",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "African Queen Dubai",
+"price": "From AED 427.5",
+"cat": "Food",
+"ref": "J014"
+},
+{
+"t": "Abu Dhabi Festival",
+"s": "2026-10-10",
+"e": "2026-12-19",
+"em": "Abu Dhabi",
+"v": "Various Abu Dhabi venues",
+"cat": "Culture & Art",
+"fam": 1,
+"ref": "J015"
+},
+{
+"t": "The Ripe Market, Academy Park",
+"s": "2026-10-10",
+"e": "2027-05-02",
+"em": "Dubai",
+"v": "Academy Park (Dubai Police Academy)",
+"time": "Weekends 9am–9pm",
+"price": "AED 5 entry",
+"cat": "Family",
+"fam": 1,
+"d": "Weekend outdoor market with local food, crafts, live music and kids' activities, until 2 May 2027.",
+"ref": "J016"
+},
+{
+"t": "Candlelight: Tribute to Adele",
+"s": "2026-10-17",
+"e": "2026-12-05",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J017"
+},
+{
+"t": "The Jazz Room: A Journey to the Heart of New Orleans - Dubai",
+"s": "2026-10-25",
+"e": "2026-12-13",
+"em": "Dubai",
+"v": "Belcanto, Dubai Opera",
+"price": "From AED 140",
+"cat": "Music",
+"ref": "J018"
+},
+{
+"t": "Sharjah Film Platform",
+"s": "2026-10-30",
+"e": "2026-11-08",
+"em": "Sharjah",
+"v": "Mirage City Cinema, Sharjah",
+"cat": "Culture & Art",
+"fam": 1,
+"ref": "J019"
+},
+{
+"t": "Sheikh Zayed Festival",
+"s": "2026-10-30",
+"e": "2027-03-14",
+"em": "Abu Dhabi",
+"v": "Al Wathba, Abu Dhabi",
+"cat": "Culture & Art",
+"fam": 1,
+"ref": "J020"
+},
+{
+"t": "Candlelight: Vivaldi's 4 Seasons",
+"s": "2026-10-31",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Al Majlis, Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J021"
+},
+{
+"t": "Dubai Fitness Challenge",
+"s": "2026-10-31",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Citywide Dubai",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J022"
+},
+{
+"t": "Festival of Lights / Diwali",
+"s": "2026-11-02",
+"e": "2026-11-12",
+"em": "Dubai",
+"v": "Citywide Dubai",
+"cat": "Festive",
+"fam": 1,
+"ref": "J023"
+},
+{
+"t": "Action Flight resident offers",
+"s": "2026-11-03",
+"e": "2026-12-15",
+"em": "Ras Al Khaimah",
+"price": "Residents: 25% off balloon · 10% off G-Force flight",
+"cat": "Shopping & Offers",
+"d": "UAE residents only: sunrise hot air balloon rides over mountains, desert and coast, or an aerobatic G-Force flight. Book before 15 Dec.",
+"ref": "J024"
+},
+{
+"t": "CinemaNA: Promised Sky (film screening)",
+"s": "2026-11-03",
+"e": "2026-11-03",
+"em": "Abu Dhabi",
+"v": "NYU Abu Dhabi Arts Center, Saadiyat Island",
+"cat": "Culture & Art",
+"d": "Screening of Erige Sehiri's drama about three women who share a home in Tunisia. Evening screening.",
+"ref": "J025"
+},
+{
+"t": "Dubai Design Week",
+"s": "2026-11-03",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Dubai Design District (d3)",
+"price": "Free",
+"free": 1,
+"cat": "Culture & Art",
+"fam": 1,
+"d": "Free, all-ages design festival with installations, exhibitions, talks and hands-on workshops. The outdoor Marketplace of independent makers runs 7–8 Nov; Downtown Design runs alongside on 4–8 Nov.",
+"ref": "J026"
+},
+{
+"t": "Ferrari World Roof Walk",
+"s": "2026-11-03",
+"e": "2027-04-30",
+"em": "Abu Dhabi",
+"v": "Ferrari World, Yas Island",
+"price": "AED 125 · AED 85 as a park ticket add-on",
+"cat": "Family",
+"fam": 1,
+"d": "Walk on the world's largest Ferrari logo with views over Yas Island.",
+"ref": "J027"
+},
+{
+"t": "Fright Nights IX at MOTIONGATE (final week)",
+"s": "2026-11-03",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "MOTIONGATE Dubai, Dubai Parks and Resorts",
+"cat": "Comedy & Theatre",
+"d": "Halloween parade, The Addams Family musical and haunted experiences including SAW, The Mummy and La Llorona. Scary for young children.",
+"ref": "J028"
+},
+{
+"t": "Halloween at LEGOLAND Dubai (extended)",
+"s": "2026-11-03",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "LEGOLAND Dubai, Dubai Parks and Resorts",
+"cat": "Family",
+"fam": 1,
+"d": "Candy trails and monster dance parties for one more week. Best Dressed costume contest on 6 and 7 Nov.",
+"ref": "J029"
+},
+{
+"t": "Light Up Your Luck Diwali festival",
+"s": "2026-11-03",
+"e": "2026-11-08",
+"em": "Abu Dhabi",
+"v": "World Trade Center Abu Dhabi",
+"cat": "Festive",
+"fam": 1,
+"d": "Festive games, family workshops and free henna. Spend AED 200 or more to pick a lucky diya and win gift cards.",
+"ref": "J030"
+},
+{
+"t": "Make Friends Dubai (weekly meet-up)",
+"s": "2026-11-03",
+"e": "2026-12-17",
+"wd": 4,
+"em": "Dubai",
+"v": "Nomad Day Bar",
+"time": "Thursdays 7:30pm–10pm",
+"price": "Free, registration required",
+"free": 1,
+"cat": "Nightlife",
+"d": "Relaxed mingle evening to meet people from around the world and practise languages.",
+"ref": "J031"
+},
+{
+"t": "Max warehouse sale",
+"s": "2026-11-03",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Cityland Mall, next to Global Village",
+"time": "11am–11pm",
+"price": "Every item AED 10 or 15",
+"cat": "Shopping & Offers",
+"fam": 1,
+"d": "Clothing for women, men and kids, plus shoes and swimwear. Go early, it gets busy.",
+"ref": "J032"
+},
+{
+"t": "Public Art Abu Dhabi Biennial",
+"s": "2026-11-03",
+"e": "2027-02-15",
+"em": "Abu Dhabi",
+"v": "Public spaces in Al Ain and Abu Dhabi city",
+"cat": "Culture & Art",
+"fam": 1,
+"d": "Works by 21 artists and collectives in public spaces. Open now in Al Ain; the Abu Dhabi city programme starts 15 Nov.",
+"ref": "J033"
+},
+{
+"t": "Sunset at the Turf: Thursday horse racing",
+"s": "2026-11-03",
+"e": "2027-04-15",
+"wd": 4,
+"em": "Abu Dhabi",
+"v": "Abu Dhabi Turf Club",
+"time": "Thursdays 5pm–8pm",
+"cat": "Sports & Outdoors",
+"d": "Seven live races at golden hour, garden views over the track and a free Pick and Win game.",
+"ref": "J034"
+},
+{
+"t": "The Matter of Light (free exhibition)",
+"s": "2026-11-03",
+"e": "2027-03-10",
+"em": "Dubai",
+"v": "Dom Art Projects, Warehouse 40, Al Quoz 1",
+"price": "Free",
+"free": 1,
+"cat": "Culture & Art",
+"d": "22 artists from the Arab world and Eastern Europe on how light changes what we see. Check visiting hours before going.",
+"ref": "J035"
+},
+{
+"t": "JONY live",
+"s": "2026-11-04",
+"e": "2026-11-04",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Music",
+"d": "JONY performs live at Coca-Cola Arena on Wednesday 4 November.",
+"ref": "J036"
+},
+{
+"t": "Sharjah International Book Fair (45th edition)",
+"s": "2026-11-04",
+"e": "2026-11-15",
+"em": "Sharjah",
+"v": "Expo Centre Sharjah",
+"cat": "Culture & Art",
+"fam": 1,
+"d": "One of the world's largest book fairs: publishers from around the world, author meetings, workshops and activities for every age.",
+"ref": "J037"
+},
+{
+"t": "Kinugawa reopens at Jumeirah Marsa Al Arab",
+"s": "2026-11-05",
+"e": "2026-11-05",
+"em": "Dubai",
+"v": "Jumeirah Marsa Al Arab",
+"price": "Weekday business lunch AED 175",
+"cat": "Food",
+"d": "Japanese restaurant with a sushi counter, robata grill, evening DJ and sunset views of Burj Al Arab.",
+"ref": "J038"
+},
+{
+"t": "Luca Minnelli with live orchestra",
+"s": "2026-11-05",
+"e": "2026-11-05",
+"em": "Dubai",
+"v": "Dubai Opera",
+"time": "8pm (110 min with interval)",
+"price": "From AED 330",
+"cat": "Music",
+"d": "Italian tenor sings classical pieces, Italian favourites, opera arias and film music. Ages 12+. Dress code: no shorts or flip-flops.",
+"ref": "J039"
+},
+{
+"t": "Yin & Yang",
+"s": "2026-11-05",
+"e": "2026-11-05",
+"em": "Dubai",
+"v": "Theatre of Digital Art (ToDA)",
+"price": "From AED 250",
+"cat": "Music",
+"ref": "J040"
+},
+{
+"t": "Big Dreams, Little Wings (family show)",
+"s": "2026-11-06",
+"e": "2026-11-08",
+"em": "Sharjah",
+"v": "Al Qasba Theatre",
+"cat": "Family",
+"fam": 1,
+"d": "Colourful family stage show with performances for children and parents.",
+"ref": "J041"
+},
+{
+"t": "Diwali night with Kavita Seth",
+"s": "2026-11-06",
+"e": "2026-11-06",
+"em": "Dubai",
+"v": "Main Stage, Global Village",
+"time": "8pm",
+"cat": "Festive",
+"fam": 1,
+"d": "Baithak-style singing show and an evening of Diwali entertainment with City FM, live on the Global Village Main Stage.",
+"ref": "J042"
+},
+{
+"t": "Mo Amer live (Abu Dhabi Comedy Season)",
+"s": "2026-11-06",
+"e": "2026-11-06",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"cat": "Comedy & Theatre",
+"d": "The stand-up comedian plays Etihad Arena as part of Abu Dhabi Comedy Season.",
+"ref": "J043"
+},
+{
+"t": "The Very Hungry Caterpillar at Cultural Foundation Abu Dhabi",
+"s": "2026-11-06",
+"e": "2026-11-07",
+"em": "Abu Dhabi",
+"v": "Cultural Foundation",
+"price": "From AED 125",
+"cat": "Family",
+"fam": 1,
+"ref": "J044"
+},
+{
+"t": "Valeriya Yakovleva stand-up (Russian)",
+"s": "2026-11-06",
+"e": "2026-11-06",
+"em": "Dubai",
+"v": "Cabana on the Beach, Palm Jumeirah",
+"time": "Arrive 7:30pm, show 8pm",
+"price": "AED 200 incl. one drink",
+"cat": "Comedy & Theatre",
+"d": "An extra beachfront stand-up show by the Russian comedian.",
+"ref": "J045"
+},
+{
+"t": "tabletop.me games weekend",
+"s": "2026-11-06",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "The Concourse, Dubai Outlet Mall",
+"time": "Fri 4pm–10pm, Sat–Sun noon–10pm",
+"price": "AED 99 a day · AED 199 for 3 days · Junior AED 49",
+"cat": "Family",
+"fam": 1,
+"d": "More than 250 board games to play, RPG sessions, trading cards, miniatures and tournaments.",
+"ref": "J046"
+},
+{
+"t": "Amr Diab 2026",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"price": "From AED 245",
+"cat": "Music",
+"ref": "J047"
+},
+{
+"t": "Bohemia Presents Jonas Blue",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Bohemia Beach Club, Dubai",
+"price": "From AED 100",
+"cat": "Nightlife",
+"ref": "J048"
+},
+{
+"t": "Candlelight: The Best of Ludovico Einaudi",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J049"
+},
+{
+"t": "Candlelight: Tribute to Michael Jackson",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J050"
+},
+{
+"t": "DHB at Skydive Dubai",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Skydive Dubai, Al Seyahi St, Dubai Marina",
+"price": "From AED 120",
+"cat": "Music",
+"ref": "J051"
+},
+{
+"t": "FIBA 3x3 World Tour 2026",
+"s": "2026-11-07",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Dubai",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J052"
+},
+{
+"t": "Jonas Blue | Skyline Saturdays at The Penthouse",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "The Penthouse, FIVE Palm Jumeirah",
+"price": "From AED 100",
+"cat": "Nightlife",
+"ref": "J053"
+},
+{
+"t": "Live & Kicking: ABBA-Esque Party",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Theatre by QE2",
+"price": "From AED 399",
+"cat": "Music",
+"ref": "J054"
+},
+{
+"t": "Maz Jobrani at Etihad Arena",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 275",
+"cat": "Comedy & Theatre",
+"ref": "J055"
+},
+{
+"t": "Ministry of Sound Classical",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Music",
+"fam": 1,
+"ref": "J056"
+},
+{
+"t": "Novah at Hive, Soho Garden Meydan",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Soho Garden Meydan",
+"price": "From AED 150",
+"cat": "Nightlife",
+"ref": "J057"
+},
+{
+"t": "Olga Malashchenko. Stand-up",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Dubai Heights Academy",
+"price": "From AED 150",
+"cat": "Comedy & Theatre",
+"ref": "J058"
+},
+{
+"t": "PERERAS With MARIANS",
+"s": "2026-11-07",
+"e": "2026-11-07",
+"em": "Dubai",
+"v": "Dubai Creek Park",
+"price": "From AED 70",
+"cat": "Music",
+"ref": "J059"
+},
+{
+"t": "Paddleboarding and kayaking at Hatta Dam",
+"s": "2026-11-07",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Hatta Dam",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"d": "Dubai Fitness Challenge weekend of stand-up paddleboarding, kayaking and more in the Hatta mountains. Free return shuttles from Dubai.",
+"ref": "J060"
+},
+{
+"t": "Diwali dinner buffet at Gastro Kitchen",
+"s": "2026-11-08",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "DoubleTree by Hilton Dubai, Jumeirah Beach",
+"time": "6pm–10pm",
+"price": "AED 199 per person · Kids 6–12 AED 99",
+"cat": "Food",
+"fam": 1,
+"d": "Festive buffet with dhol beats, dance and Diwali décor.",
+"ref": "J061"
+},
+{
+"t": "Diwali menus at Bait Al Ahlam",
+"s": "2026-11-08",
+"e": "2026-11-10",
+"em": "Dubai",
+"v": "Bait Al Ahlam",
+"price": "Free sweets buffet with set menus",
+"cat": "Food",
+"fam": 1,
+"d": "Special vegetarian and vegan set menus with a complimentary sweets buffet on 8, 9 and 10 Nov.",
+"ref": "J062"
+},
+{
+"t": "Emaar Dubai Premier Padel P1",
+"s": "2026-11-08",
+"e": "2026-11-15",
+"em": "Dubai",
+"v": "Hamdan Sports Complex",
+"price": "From AED 45",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J063"
+},
+{
+"t": "In The Park Music Festival",
+"s": "2026-11-08",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Dubai Media City Amphitheatre",
+"price": "Kids go free · 50% off when you sign up on inthepark.ae",
+"cat": "Music",
+"fam": 1,
+"d": "Live bands, a rodeo bull, axe throwing and a new kids area. Kids and nannies go free.",
+"ref": "J064"
+},
+{
+"t": "The Very Hungry Caterpillar",
+"s": "2026-11-08",
+"e": "2026-11-08",
+"em": "Dubai",
+"v": "Meyana Theatre",
+"price": "From AED 125",
+"cat": "Family",
+"fam": 1,
+"ref": "J065"
+},
+{
+"t": "Art Here 2026: Rawafid opens",
+"s": "2026-11-11",
+"e": "2026-11-11",
+"em": "Abu Dhabi",
+"v": "Louvre Abu Dhabi, Saadiyat Island",
+"cat": "Culture & Art",
+"fam": 1,
+"d": "Sixth edition of the Louvre Abu Dhabi contemporary art show and Richard Mille Art Prize, exploring the shared history of India and the Gulf.",
+"ref": "J066"
+},
+{
+"t": "ANOTR @ Pacha ICONS Playa Pacha",
+"s": "2026-11-13",
+"e": "2026-11-13",
+"em": "Dubai",
+"v": "Playa Pacha Beach Club, Dubai",
+"price": "From AED 250",
+"cat": "Nightlife",
+"ref": "J067"
+},
+{
+"t": "BREDx weekend: Bu Kolthoum, Zaid Khaled, Nasser, Bryson Tiller",
+"s": "2026-11-13",
+"e": "2026-11-14",
+"em": "Abu Dhabi",
+"v": "BRED Abu Dhabi",
+"price": "Wave 1 from AED 195 (13 Nov) · from AED 295 (Nasser, 14 Nov)",
+"cat": "Music",
+"d": "Arabic pop and alt-pop on 13 Nov (Bu Kolthoum, Zaid Khaled); Nasser and Bryson Tiller on 14 Nov.",
+"ref": "J068"
+},
+{
+"t": "Dubai T100 Triathlon Weekend",
+"s": "2026-11-13",
+"e": "2026-11-15",
+"em": "Dubai",
+"v": "Al Mamzar",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J069"
+},
+{
+"t": "Hans Zimmer Live at Etihad Arena",
+"s": "2026-11-13",
+"e": "2026-11-13",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 245",
+"cat": "Music",
+"ref": "J070"
+},
+{
+"t": "Joseph Capriati",
+"s": "2026-11-13",
+"e": "2026-11-13",
+"em": "Dubai",
+"v": "Soho Garden Meydan",
+"cat": "Nightlife",
+"d": "House and techno headliner. Adults only.",
+"ref": "J071"
+},
+{
+"t": "Taste of Abu Dhabi",
+"s": "2026-11-13",
+"e": "2026-11-15",
+"em": "Abu Dhabi",
+"v": "Gateway Park North, Yas Island",
+"cat": "Food",
+"fam": 1,
+"d": "Food festival with 16 pop-up restaurants, live entertainment and activities for kids. VIP tickets include fast-track entry and a lounge.",
+"ref": "J072"
+},
+{
+"t": "Adriatique present X at Ushuaïa Dubai Harbour Experience",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Dubai",
+"v": "Ushuaïa Dubai Harbour Experience",
+"price": "From AED 195",
+"cat": "Nightlife",
+"ref": "J073"
+},
+{
+"t": "Bohemia Presents Alex Wann & SONA",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Dubai",
+"v": "Bohemia Beach Club | FIVE Palm, Dubai",
+"cat": "Nightlife",
+"ref": "J074"
+},
+{
+"t": "Furusiyya: The Return to Origins",
+"s": "2026-11-14",
+"e": "2026-12-12",
+"em": "Abu Dhabi",
+"v": "Abu Dhabi Royal Equestrian Arts",
+"price": "From AED 150",
+"cat": "Culture & Art",
+"ref": "J075"
+},
+{
+"t": "Mathaka Yathra - මතක යාත්‍රා",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Abu Dhabi",
+"v": "G6 Club, World Trade Center Mall, Abu Dhabi",
+"price": "From AED 100",
+"cat": "Music",
+"ref": "J076"
+},
+{
+"t": "Meet the Makers Market",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Abu Dhabi",
+"v": "General Women's Union, Abu Dhabi",
+"time": "5pm–11pm",
+"cat": "Shopping & Offers",
+"fam": 1,
+"d": "Handmade crafts and small local businesses. Free parking.",
+"ref": "J077"
+},
+{
+"t": "Nemkov vs Bilostenniy (fight night)",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Sports & Outdoors",
+"d": "Title fight between the long-unbeaten champion and his knockout-artist challenger.",
+"ref": "J078"
+},
+{
+"t": "Re-inKarnation: Oru Maalai (Tamil live music)",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Dubai",
+"v": "Firdaus Studio",
+"cat": "Music",
+"d": "Singapore's live music collective with songs, a DJ and stand-up. Last few seats.",
+"ref": "J079"
+},
+{
+"t": "Real American Freestyle wrestling: Chimaev vs Covington",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"time": "Doors 6:30pm, starts 8pm",
+"price": "From AED 150",
+"cat": "Sports & Outdoors",
+"d": "First Middle East event, also featuring Tsarukyan vs Gracie. Under-16s must come with an adult aged 21 or over.",
+"ref": "J080"
+},
+{
+"t": "Sharjah Motor Fest",
+"s": "2026-11-14",
+"e": "2027-01-16",
+"dates": [
+"2026-11-14",
+"2026-12-12",
+"2027-01-16"
+],
+"em": "Sharjah",
+"price": "Free",
+"free": 1,
+"cat": "Family",
+"fam": 1,
+"d": "Free car show series: Al Heera Beach on 14 Nov, Al Majaz on 12 Dec and Khorfakkan on 16 Jan 2027.",
+"ref": "J081"
+},
+{
+"t": "When Chai Met Toast",
+"s": "2026-11-14",
+"e": "2026-11-14",
+"em": "Dubai",
+"v": "New Covent Garden Theatre, Dubai",
+"cat": "Comedy & Theatre",
+"ref": "J082"
+},
+{
+"t": "Candlelight: From Mozart to Chopin",
+"s": "2026-11-15",
+"e": "2027-01-16",
+"em": "Dubai",
+"v": "Al Majlis, Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J083"
+},
+{
+"t": "Candlelight: Queen vs. ABBA",
+"s": "2026-11-15",
+"e": "2026-11-15",
+"em": "Dubai",
+"v": "Al Majlis, Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J084"
+},
+{
+"t": "NOMAD Abu Dhabi art fair",
+"s": "2026-11-18",
+"e": "2026-11-22",
+"em": "Abu Dhabi",
+"v": "Terminal 1, old Abu Dhabi Airport",
+"price": "Free with registration",
+"free": 1,
+"cat": "Culture & Art",
+"fam": 1,
+"d": "Collectible design and art fair. 18 Nov is invite-only.",
+"ref": "J085"
+},
+{
+"t": "Abu Dhabi International Boat Show",
+"s": "2026-11-19",
+"e": "2026-11-22",
+"em": "Abu Dhabi",
+"v": "ADNEC Centre, Abu Dhabi",
+"price": "From AED 35",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J086"
+},
+{
+"t": "Crazy Horse Paris - The Dubai Edition Tickets",
+"s": "2026-11-19",
+"e": "2027-07-31",
+"em": "Dubai",
+"v": "Zabeel Theatre",
+"price": "From AED 400",
+"cat": "Nightlife",
+"d": "Cabaret show for adults.",
+"ref": "J087"
+},
+{
+"t": "Frieze Abu Dhabi",
+"s": "2026-11-19",
+"e": "2026-11-22",
+"em": "Abu Dhabi",
+"v": "Manarat Al Saadiyat",
+"price": "From AED 36.75",
+"cat": "Culture & Art",
+"fam": 1,
+"ref": "J088"
+},
+{
+"t": "World Art Dubai 2026",
+"s": "2026-11-19",
+"e": "2026-11-22",
+"em": "Dubai",
+"v": "Dubai World Trade Centre",
+"cat": "Culture & Art",
+"fam": 1,
+"d": "More than 300 artists and galleries, live performances, free workshops and interactive experiences.",
+"ref": "J089"
+},
+{
+"t": "American Ballet Theatre (Abu Dhabi Festival)",
+"s": "2026-11-20",
+"e": "2026-11-20",
+"em": "Abu Dhabi",
+"v": "Emirates Palace, Abu Dhabi",
+"price": "From AED 125",
+"cat": "Music",
+"fam": 1,
+"ref": "J090"
+},
+{
+"t": "Anuv Jain",
+"s": "2026-11-20",
+"e": "2026-11-20",
+"em": "Dubai",
+"v": "Jubilee Park, Expo City",
+"price": "From AED 149",
+"cat": "Music",
+"ref": "J091"
+},
+{
+"t": "MARCO CAROLA PRESENTS MUSIC ON | PACHA ICONS",
+"s": "2026-11-20",
+"e": "2026-11-20",
+"em": "Dubai",
+"v": "FIVE Luxe JBR, Dubai",
+"cat": "Nightlife",
+"ref": "J092"
+},
+{
+"t": "Anubhav Singh Bassi Live - Kisi Ko Batana Mat",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 125",
+"cat": "Comedy & Theatre",
+"ref": "J093"
+},
+{
+"t": "Aries Spears Live",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 120",
+"cat": "Comedy & Theatre",
+"ref": "J094"
+},
+{
+"t": "Bohemia Presents MK",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Bohemia Beach Club | FIVE Palm, Dubai",
+"cat": "Nightlife",
+"ref": "J095"
+},
+{
+"t": "Emirates Dubai Sail Grand Prix",
+"s": "2026-11-21",
+"e": "2026-11-22",
+"em": "Dubai",
+"v": "Mina Rashid",
+"price": "AED 265 a day · AED 425 weekend",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J096"
+},
+{
+"t": "Fall Celebration: Beats of India",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Al Wasl Plaza, Expo City Dubai",
+"time": "4pm–10pm",
+"cat": "Festive",
+"fam": 1,
+"d": "Indian food, music and colour for a day at Al Wasl Season, with a Young Entrepreneurs Market. Tickets on sale soon.",
+"ref": "J097"
+},
+{
+"t": "HANDAWAKA",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Dubai Creek Park",
+"price": "From AED 100",
+"cat": "Music",
+"ref": "J098"
+},
+{
+"t": "Keinemusik (full trio), 21 Nov, Bab Al Shams Arena (from AED 375)",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Bab Al Shams Arena",
+"cat": "Nightlife",
+"ref": "J099"
+},
+{
+"t": "Skyline Saturdays Presents Ilario Alicante",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "The Penthouse | FIVE Palm, Dubai",
+"cat": "Nightlife",
+"ref": "J100"
+},
+{
+"t": "Stephen Speaks: Right on Time",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Dubai Miracle Garden Amphitheatre",
+"time": "Gates 4pm, concert 6pm–8pm",
+"price": "Gold AED 299 · VIP 399 · VVIP 449 (+VAT)",
+"cat": "Music",
+"d": "The band behind \"Passenger Seat\" plays its hits, new songs and covers. Tickets opening soon.",
+"ref": "J101"
+},
+{
+"t": "Synthony x Faithless",
+"s": "2026-11-21",
+"e": "2026-11-21",
+"em": "Dubai",
+"v": "Bla Bla by McGettigan's, Dubai",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J102"
+},
+{
+"t": "DP World ILT20 Season 5",
+"s": "2026-11-22",
+"e": "2026-12-20",
+"em": "Dubai",
+"v": "Dubai International Stadium",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J103"
+},
+{
+"t": "Dubai Run",
+"s": "2026-11-22",
+"e": "2026-11-22",
+"em": "Dubai",
+"v": "Sheikh Zayed Road",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"ref": "J104"
+},
+{
+"t": "ImagiNesan: musical stand-up comedy",
+"s": "2026-11-22",
+"e": "2026-11-22",
+"em": "Dubai",
+"v": "GEMS Wellington International School, Al Sufouh",
+"time": "Doors 5:30pm, show 6pm",
+"cat": "Comedy & Theatre",
+"fam": 1,
+"d": "Nesan's first Dubai show: jokes, stories, music and sing-alongs in English.",
+"ref": "J105"
+},
+{
+"t": "Mina Nader's Interactive Stand-Up Comedy Show at Abu Dhabi Comedy Festival",
+"s": "2026-11-22",
+"e": "2026-11-22",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 195",
+"cat": "Comedy & Theatre",
+"ref": "J106"
+},
+{
+"t": "Sid Sriram: Sing India",
+"s": "2026-11-22",
+"e": "2026-11-22",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Music",
+"d": "Hear \"Srivalli\" and more live with thousands of fans.",
+"ref": "J107"
+},
+{
+"t": "Talise full moon yoga",
+"s": "2026-11-24",
+"e": "2026-11-24",
+"em": "Dubai",
+"v": "Talise Spa, Jumeirah Al Qasr",
+"price": "From AED 250",
+"cat": "Sports & Outdoors",
+"ref": "J108"
+},
+{
+"t": "Al Ain Hunting & Equestrian Exhibition",
+"s": "2026-11-25",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"v": "ADNEC Centre Al Ain",
+"cat": "Culture & Art",
+"fam": 1,
+"ref": "J109"
+},
+{
+"t": "Dubai International Boat Show",
+"s": "2026-11-25",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Dubai Harbour",
+"time": "25–26 & 29 Nov 3pm–8pm · 27–28 Nov 3pm–9pm",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"d": "Step aboard superyachts, see live watersports and visit the Dive Zone, with food and family activities by the water. No visitor parking: use the free shuttle buses, or a JTH car drop-off.",
+"ref": "J110"
+},
+{
+"t": "Living Legacies exhibition opens",
+"s": "2026-11-25",
+"e": "2026-11-25",
+"em": "Abu Dhabi",
+"v": "Louvre Abu Dhabi, Saadiyat Island",
+"cat": "Culture & Art",
+"fam": 1,
+"d": "Exhibition with the ALIPH foundation on protecting cultural heritage.",
+"ref": "J111"
+},
+{
+"t": "Trevor Noah",
+"s": "2026-11-25",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Dubai Opera, Main Auditorium",
+"price": "From AED 295",
+"cat": "Comedy & Theatre",
+"ref": "J112"
+},
+{
+"t": "Algarabia",
+"s": "2026-11-26",
+"e": "2026-11-26",
+"em": "Abu Dhabi",
+"v": "Emirates Palace, Abu Dhabi",
+"price": "From AED 100",
+"cat": "Music",
+"ref": "J113"
+},
+{
+"t": "The Big Shopper Sale",
+"s": "2026-11-26",
+"e": "2026-12-06",
+"em": "Sharjah",
+"v": "Expo Centre Sharjah",
+"cat": "Shopping & Offers",
+"fam": 1,
+"ref": "J114"
+},
+{
+"t": "Andrew Schulz",
+"s": "2026-11-27",
+"e": "2026-11-27",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Abu Dhabi",
+"cat": "Music",
+"ref": "J115"
+},
+{
+"t": "Atif Aslam live",
+"s": "2026-11-27",
+"e": "2026-11-27",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Music",
+"d": "Atif Aslam returns with a bigger stage and a new Golden Circle.",
+"ref": "J116"
+},
+{
+"t": "Emirates Dubai 7s",
+"s": "2026-11-27",
+"e": "2026-11-29",
+"em": "Dubai",
+"price": "Family weekend pass AED 1,136 (2 adults + 2 children)",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"d": "Three days of rugby sevens and festival atmosphere. Selected HSBC UAE cardholders get 20% off General Admission.",
+"ref": "J117"
+},
+{
+"t": "Hiba Tawaji & Ibrahim Maalouf – A la Française",
+"s": "2026-11-27",
+"e": "2026-11-27",
+"em": "Dubai",
+"v": "Dubai Opera, Main Auditorium",
+"price": "From AED 99",
+"cat": "Music",
+"ref": "J118"
+},
+{
+"t": "Tarkan",
+"s": "2026-11-27",
+"e": "2026-11-27",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Abu Dhabi",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J119"
+},
+{
+"t": "Tarkan at Etihad Arena",
+"s": "2026-11-27",
+"e": "2026-11-27",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J120"
+},
+{
+"t": "ARTBAT Present Upperground at Ushuaïa Dubai Harbour Experience",
+"s": "2026-11-28",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "Ushuaïa Dubai Harbour Experience",
+"price": "From AED 150",
+"cat": "Nightlife",
+"ref": "J121"
+},
+{
+"t": "Al Majid Classic Bodybuilding & Fitness",
+"s": "2026-11-28",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "The Agenda",
+"cat": "Sports & Outdoors",
+"ref": "J122"
+},
+{
+"t": "Live & Kicking: Fabulously Festive Party",
+"s": "2026-11-28",
+"e": "2026-12-19",
+"em": "Dubai",
+"v": "Theatre by QE2",
+"price": "From AED 399",
+"cat": "Music",
+"ref": "J123"
+},
+{
+"t": "Skyline Saturdays Presents RAFAEL",
+"s": "2026-11-28",
+"e": "2026-11-28",
+"em": "Dubai",
+"v": "The Penthouse | FIVE Palm, Dubai",
+"cat": "Nightlife",
+"ref": "J124"
+},
+{
+"t": "The Arab Icon Ramy Sabry Live in Etihad Arena",
+"s": "2026-11-28",
+"e": "2026-11-28",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J125"
+},
+{
+"t": "Angham at Space42 Arena, Abu Dhabi",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"v": "Space 42 Arena",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J126"
+},
+{
+"t": "Breakfast with Santa",
+"s": "2026-11-29",
+"e": "2026-12-20",
+"dates": [
+"2026-11-29",
+"2026-12-06",
+"2026-12-13",
+"2026-12-20"
+],
+"em": "Dubai",
+"v": "Hilton Dubai Jumeirah",
+"time": "8am–12pm",
+"price": "Adults AED 165 · Kids 6–12 AED 125 · Kids 3–5 AED 100",
+"cat": "Festive",
+"fam": 1,
+"d": "English breakfast, story time with Santa and his elves, carols, face painting and a family photo. Includes pool and beach access. On 29 Nov and 6, 13 and 20 Dec.",
+"ref": "J127"
+},
+{
+"t": "Candlelight: Tribute to Ariana Grande",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Al Majlis, Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J128"
+},
+{
+"t": "Double Trouble: Raunaq Rajani & Gursimran Khamba",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Emirates Theatre",
+"time": "Doors 4pm, show 5pm",
+"price": "From AED 99",
+"cat": "Comedy & Theatre",
+"d": "Two Indian comedians, one night of stand-up. Ages 16+.",
+"ref": "J129"
+},
+{
+"t": "Dubai Yoga: free sunrise session",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Under The Gate, DIFC",
+"time": "Gates 5:15am, main session 6:45am",
+"price": "Free, registration required",
+"free": 1,
+"cat": "Sports & Outdoors",
+"fam": 1,
+"d": "Closing event of the Dubai Fitness Challenge: live music, sound bath, breathwork and a 30-minute mass yoga session for all levels.",
+"ref": "J130"
+},
+{
+"t": "Ghostly Kisses",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Bay, Abu Dhabi",
+"cat": "Music",
+"ref": "J131"
+},
+{
+"t": "MG the OG live",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "AMITY SCHOOL, Dubai",
+"cat": "Music",
+"ref": "J132"
+},
+{
+"t": "Margaux Sauve and Louis-Etienne Santais",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"cat": "Music",
+"ref": "J133"
+},
+{
+"t": "Qatar Philharmonic Orchestra at Abu Dhabi Festival 2026",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"price": "From AED 225",
+"cat": "Music",
+"fam": 1,
+"ref": "J134"
+},
+{
+"t": "Rahgir live",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "The Metropolitan Hotel",
+"price": "AED 160 single · AED 290 couple",
+"cat": "Music",
+"ref": "J135"
+},
+{
+"t": "Verdi’s Opera Gala",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Abu Dhabi",
+"v": "Emirates Palace, Abu Dhabi",
+"price": "From AED 125",
+"cat": "Music",
+"fam": 1,
+"ref": "J136"
+},
+{
+"t": "Ye Jo Hans Rahi Hai Dunia",
+"s": "2026-11-29",
+"e": "2026-11-29",
+"em": "Dubai",
+"v": "Al Shindagah Ballroom, Metropolitan Hotel, Sheikh Zayed Road",
+"cat": "Comedy & Theatre",
+"ref": "J137"
+},
+{
+"t": "Eid Al Etihad (UAE National Day) celebrations",
+"s": "2026-11-30",
+"e": "2026-12-03",
+"em": "Dubai",
+"v": "Citywide Dubai",
+"cat": "Festive",
+"fam": 1,
+"ref": "J138"
+},
+{
+"t": "DXB Winter Festival",
+"s": "2026-12-01",
+"e": "2027-01-10",
+"em": "Dubai",
+"v": "Dubai Festival City Mall",
+"price": "Early bird from AED 27",
+"cat": "Festive",
+"fam": 1,
+"d": "Christmas-themed winter festival with a Dubai twist.",
+"ref": "J139"
+},
+{
+"t": "Hala Mohanlal",
+"s": "2026-12-02",
+"e": "2026-12-02",
+"em": "Dubai",
+"v": "Dubai – venue to be announced",
+"cat": "Music",
+"ref": "J140"
+},
+{
+"t": "The Tsar's Bride by the Bolshoi Theatre",
+"s": "2026-12-02",
+"e": "2026-12-02",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Music",
+"ref": "J141"
+},
+{
+"t": "Yasalam Classics Presents Andrea Bocelli Live",
+"s": "2026-12-02",
+"e": "2026-12-02",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J142"
+},
+{
+"t": "Abu Dhabi Grand Prix after-race concerts",
+"s": "2026-12-03",
+"e": "2026-12-04",
+"em": "Abu Dhabi",
+"v": "Etihad Live, Abu Dhabi",
+"cat": "Music",
+"d": "Kings of Leon on 3 Dec and Jennifer Lopez with Alex Warren on 4 Dec. Only for Abu Dhabi GP ticket holders; Golden Circle upgrades available.",
+"ref": "J143"
+},
+{
+"t": "Bolshoi Theatre Orchestra",
+"s": "2026-12-03",
+"e": "2026-12-03",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Music",
+"ref": "J144"
+},
+{
+"t": "Lewis Capaldi and Zara Larsson",
+"s": "2026-12-03",
+"e": "2026-12-03",
+"em": "Abu Dhabi",
+"v": "Etihad Park, Abu Dhabi",
+"cat": "Music",
+"ref": "J145"
+},
+{
+"t": "ANYMA Presents ÆDEN",
+"s": "2026-12-04",
+"e": "2026-12-04",
+"em": "Abu Dhabi",
+"v": "Yas Gateway Park North",
+"price": "From AED 545",
+"cat": "Nightlife",
+"ref": "J146"
+},
+{
+"t": "Charlotte de Witte at HIVE, Soho Garden",
+"s": "2026-12-04",
+"e": "2026-12-04",
+"em": "Dubai",
+"v": "Soho Garden Meydan",
+"price": "From AED 150",
+"cat": "Nightlife",
+"ref": "J147"
+},
+{
+"t": "Festive season in Dubai: markets and Santa",
+"s": "2026-12-04",
+"e": "2026-12-27",
+"em": "Dubai",
+"v": "Madinat Jumeirah · Mall of the Emirates · Theatre by QE2",
+"time": "Market Mon–Thu 3pm–late, Fri–Sun noon–late",
+"cat": "Festive",
+"fam": 1,
+"d": "Madinat Jumeirah Festive Market (4–27 Dec), Dear Santa experience at Mall of the Emirates (4–25 Dec, gift with every child ticket) and A Christmas Carol at Theatre by QE2.",
+"ref": "J148"
+},
+{
+"t": "The Nutcracker by the Bolshoi Ballet",
+"s": "2026-12-04",
+"e": "2026-12-06",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Comedy & Theatre",
+"fam": 1,
+"d": "First time in the UAE: Tchaikovsky's festive ballet with the Bolshoi's principal dancers and orchestra. Five performances.",
+"ref": "J149"
+},
+{
+"t": "&ME @ Pacha ICONS",
+"s": "2026-12-05",
+"e": "2026-12-05",
+"em": "Dubai",
+"v": "FIVE Luxe JBR, Dubai",
+"cat": "Nightlife",
+"ref": "J150"
+},
+{
+"t": "Candlelight: Coldplay vs. Imagine Dragons",
+"s": "2026-12-05",
+"e": "2026-12-05",
+"em": "Dubai",
+"v": "Waldorf Astoria DIFC",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J151"
+},
+{
+"t": "Imagine Dragons",
+"s": "2026-12-05",
+"e": "2026-12-05",
+"em": "Abu Dhabi",
+"v": "Etihad Live, Abu Dhabi",
+"cat": "Music",
+"ref": "J152"
+},
+{
+"t": "Mission Elf Possible at Theatre by QE2",
+"s": "2026-12-05",
+"e": "2026-12-12",
+"em": "Dubai",
+"v": "Theatre by QE2",
+"price": "From AED 63.75",
+"cat": "Family",
+"fam": 1,
+"ref": "J153"
+},
+{
+"t": "NEMIGA Live at Harat's Republic",
+"s": "2026-12-05",
+"e": "2026-12-05",
+"em": "Dubai",
+"v": "Harat's Republic",
+"price": "From AED 250",
+"cat": "Nightlife",
+"ref": "J154"
+},
+{
+"t": "Secondhand Serenade",
+"s": "2026-12-05",
+"e": "2026-12-05",
+"em": "Dubai",
+"v": "Jubilee Park, Expo City",
+"price": "From AED 199",
+"cat": "Music",
+"ref": "J155"
+},
+{
+"t": "The Elf in the Gulf",
+"s": "2026-12-05",
+"e": "2026-12-06",
+"em": "Dubai",
+"v": "Terra Auditorium, Expo City Dubai",
+"time": "11:00 · 14:00 · 18:00",
+"price": "Children AED 75 · Adults AED 100 · 4 tickets AED 300",
+"cat": "Family",
+"fam": 1,
+"d": "A festive family mystery show about elves on a mission to save Christmas magic.",
+"ref": "J156"
+},
+{
+"t": "Alone in the Universe at Jumeirah Beach Hotel",
+"s": "2026-12-06",
+"e": "2026-12-06",
+"em": "Dubai",
+"v": "Meyana Theatre, Jumeirah Beach Hotel",
+"price": "From AED 550",
+"cat": "Music",
+"ref": "J157"
+},
+{
+"t": "The Chainsmokers and The Script",
+"s": "2026-12-06",
+"e": "2026-12-06",
+"em": "Abu Dhabi",
+"v": "Etihad Live, Abu Dhabi",
+"cat": "Music",
+"ref": "J158"
+},
+{
+"t": "Enrico Macias",
+"s": "2026-12-10",
+"e": "2026-12-10",
+"em": "Dubai",
+"v": "Dubai Opera, Main Auditorium",
+"price": "From AED 295",
+"cat": "Music",
+"ref": "J159"
+},
+{
+"t": "Lisa Batiashvili and Giorgi Gigashvili",
+"s": "2026-12-10",
+"e": "2026-12-10",
+"em": "Abu Dhabi",
+"v": "The Arts Centre at NYU Abu Dhabi",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J160"
+},
+{
+"t": "Guy Manoukian: 10th Dubai Opera concert",
+"s": "2026-12-11",
+"e": "2026-12-11",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Music",
+"d": "Oriental melodies, original pieces and reimagined classics from the Lebanese pianist.",
+"ref": "J161"
+},
+{
+"t": "Liwa International Festival",
+"s": "2026-12-11",
+"e": "2027-01-02",
+"em": "Abu Dhabi",
+"v": "Liwa, Al Dhafra",
+"cat": "Festive",
+"fam": 1,
+"ref": "J162"
+},
+{
+"t": "Luke Dean b2b Max Dean @ Pacha ICONS",
+"s": "2026-12-11",
+"e": "2026-12-11",
+"em": "Dubai",
+"v": "FIVE Luxe JBR, Dubai",
+"cat": "Nightlife",
+"ref": "J163"
+},
+{
+"t": "Minsoo Sohn",
+"s": "2026-12-11",
+"e": "2026-12-11",
+"em": "Abu Dhabi",
+"v": "The Arts Centre at NYU Abu Dhabi",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J164"
+},
+{
+"t": "Sharjah Focal Point",
+"s": "2026-12-11",
+"e": "2026-12-13",
+"em": "Sharjah",
+"v": "Bait Obaid Al Shamsi, Sharjah",
+"cat": "Culture & Art",
+"ref": "J165"
+},
+{
+"t": "Sole DXB",
+"s": "2026-12-11",
+"e": "2026-12-13",
+"em": "Dubai",
+"cat": "Music",
+"d": "Dubai's culture festival of music, sneakers, art and streetwear.",
+"ref": "J166"
+},
+{
+"t": "Winter City at Al Wasl Plaza",
+"s": "2026-12-11",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Al Wasl Plaza, Expo City Dubai",
+"time": "4pm–10pm",
+"price": "AED 60 · Fast track AED 175",
+"cat": "Festive",
+"fam": 1,
+"d": "Holiday village themed with Disney+ stories. Children aged 7–13 can register for Santa's Elf Academy.",
+"ref": "J167"
+},
+{
+"t": "Bohemia Presents Miguelle & Tons",
+"s": "2026-12-12",
+"e": "2026-12-12",
+"em": "Dubai",
+"v": "Bohemia Beach Club, Dubai",
+"price": "From AED 100",
+"cat": "Nightlife",
+"ref": "J168"
+},
+{
+"t": "Elf The Musical",
+"s": "2026-12-12",
+"e": "2026-12-20",
+"dates": [
+"2026-12-12",
+"2026-12-13",
+"2026-12-18",
+"2026-12-19",
+"2026-12-20"
+],
+"em": "Dubai",
+"v": "Raj Mahal Theatre, Riverland, Dubai Parks and Resorts",
+"price": "Offer: 4 tickets for the price of 3",
+"cat": "Family",
+"fam": 1,
+"d": "West End cast in the festive musical based on the film Elf. 75 minutes. On 12–13 and 18–20 Dec.",
+"ref": "J169"
+},
+{
+"t": "Mahmut Orhan at Ushuaïa Dubai Harbour Experience",
+"s": "2026-12-12",
+"e": "2026-12-12",
+"em": "Dubai",
+"v": "Ushuaïa Dubai Harbour Experience",
+"price": "From AED 150",
+"cat": "Nightlife",
+"ref": "J170"
+},
+{
+"t": "The Jury Experience in Dubai",
+"s": "2026-12-12",
+"e": "2026-12-12",
+"em": "Dubai",
+"v": "Dubai Knowledge Park Auditorium",
+"price": "From AED 150",
+"cat": "Comedy & Theatre",
+"ref": "J171"
+},
+{
+"t": "The Legend Enrico Macias Live at Cultural Foundation",
+"s": "2026-12-12",
+"e": "2026-12-12",
+"em": "Abu Dhabi",
+"v": "Cultural Foundation",
+"price": "From AED 250",
+"cat": "Music",
+"ref": "J172"
+},
+{
+"t": "Community Run at The Ripe Market",
+"s": "2026-12-13",
+"e": "2026-12-13",
+"em": "Dubai",
+"v": "The Ripe Market, Dubai Police Academy Park",
+"price": "From AED 116",
+"cat": "Shopping & Offers",
+"fam": 1,
+"ref": "J173"
+},
+{
+"t": "Philippine Madrigal Singers",
+"s": "2026-12-13",
+"e": "2026-12-13",
+"em": "Dubai",
+"v": "Sheikh Rashid Auditorium, Indian High School, Oud Metha",
+"time": "Gates 5:30pm, concert 7pm–9pm",
+"price": "AED 199 – 699",
+"cat": "Music",
+"d": "The Madz sing classical masterpieces, Filipino folk songs and OPM favourites.",
+"ref": "J174"
+},
+{
+"t": "Chicago the Musical",
+"s": "2026-12-16",
+"e": "2026-12-20",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Comedy & Theatre",
+"d": "The Broadway classic, live for five days.",
+"ref": "J175"
+},
+{
+"t": "Denis Matsuev in Concert",
+"s": "2026-12-16",
+"e": "2026-12-16",
+"em": "Dubai",
+"v": "Dubai Opera, Main Auditorium",
+"price": "From AED 350",
+"cat": "Music",
+"ref": "J176"
+},
+{
+"t": "Winter Clearance Sale",
+"s": "2026-12-17",
+"e": "2026-12-27",
+"em": "Sharjah",
+"v": "Expo Centre Sharjah",
+"cat": "Shopping & Offers",
+"fam": 1,
+"ref": "J177"
+},
+{
+"t": "Abracadabra",
+"s": "2026-12-18",
+"e": "2026-12-19",
+"em": "Dubai",
+"v": "Dubai Opera, Main Auditorium",
+"price": "From AED 230",
+"cat": "Family",
+"fam": 1,
+"ref": "J178"
+},
+{
+"t": "Disney's Encanto Live in Concert",
+"s": "2026-12-18",
+"e": "2026-12-18",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 80",
+"cat": "Family",
+"fam": 1,
+"ref": "J179"
+},
+{
+"t": "Dopa World",
+"s": "2026-12-18",
+"e": "2026-12-20",
+"em": "Dubai",
+"v": "Jubilee Park, Expo City Dubai",
+"price": "From AED 245",
+"cat": "Music",
+"ref": "J180"
+},
+{
+"t": "Hariharan – The Mehfil Studio",
+"s": "2026-12-18",
+"e": "2026-12-18",
+"em": "Dubai",
+"v": "Dubai World Trade Centre",
+"cat": "Music",
+"ref": "J181"
+},
+{
+"t": "Candlelight: Christmas Classics",
+"s": "2026-12-19",
+"e": "2026-12-19",
+"em": "Dubai",
+"v": "Al Nojoom Ballroom",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J182"
+},
+{
+"t": "Candlelight: Tribute to Fairuz",
+"s": "2026-12-19",
+"e": "2026-12-19",
+"em": "Dubai",
+"v": "Al Nojoom Ballroom",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J183"
+},
+{
+"t": "Dhafer Youssef at Abu Dhabi Festival 2026",
+"s": "2026-12-19",
+"e": "2026-12-19",
+"em": "Abu Dhabi",
+"v": "Louvre Abu Dhabi",
+"price": "From AED 225",
+"cat": "Music",
+"ref": "J184"
+},
+{
+"t": "Nitro Circus 2.0",
+"s": "2026-12-19",
+"e": "2026-12-20",
+"em": "Abu Dhabi",
+"v": "Liwa",
+"cat": "Sports & Outdoors",
+"fam": 1,
+"d": "FMX and BMX riders and huge aerial tricks in the Liwa desert.",
+"ref": "J185"
+},
+{
+"t": "Disney's The Lion King Live in Concert",
+"s": "2026-12-20",
+"e": "2026-12-20",
+"em": "Abu Dhabi",
+"v": "Etihad Arena",
+"price": "From AED 80",
+"cat": "Family",
+"fam": 1,
+"ref": "J186"
+},
+{
+"t": "Jake Paul boxing fight (announced)",
+"s": "2026-12-24",
+"e": "2026-12-24",
+"em": "Dubai",
+"cat": "Sports & Outdoors",
+"d": "Jake Paul's first professional fight in Dubai on Christmas Eve. Opponent and venue not yet announced.",
+"ref": "J187"
+},
+{
+"t": "Christmas Day lunch at The Els Club",
+"s": "2026-12-25",
+"e": "2026-12-25",
+"em": "Dubai",
+"v": "The Els Club Dubai",
+"time": "12pm–4pm",
+"price": "AED 525 – 995 · Children 5–12 AED 225",
+"cat": "Food",
+"fam": 1,
+"d": "Festive lunch at Big Easy or 261 Restaurant.",
+"ref": "J188"
+},
+{
+"t": "Candlelight: The Best of Hans Zimmer",
+"s": "2026-12-26",
+"e": "2026-12-26",
+"em": "Dubai",
+"v": "Al Majlis Madinat Jumeirah Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J189"
+},
+{
+"t": "Candlelight: Tribute to Ludovico Einaudi",
+"s": "2026-12-26",
+"e": "2026-12-26",
+"em": "Dubai",
+"v": "Al Majlis Madinat Jumeirah Mina A’Salam",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J190"
+},
+{
+"t": "Rahat Fateh Ali Khan & Shah Zaman Ali Khan - Once Upon a Time World Tour",
+"s": "2026-12-26",
+"e": "2026-12-26",
+"em": "Dubai",
+"v": "Coca-Cola Arena, Dubai",
+"price": "From AED 95",
+"cat": "Music",
+"ref": "J191"
+},
+{
+"t": "I Love Dubai NYE Rendezvous",
+"s": "2026-12-28",
+"e": "2027-01-01",
+"em": "Dubai",
+"cat": "Festive",
+"fam": 1,
+"ref": "J192"
+},
+{
+"t": "Argy Presents Neworld - New Year's Eve at Ushuaïa Dubai Harbour Experience",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Ushuaïa Dubai Harbour Experience",
+"price": "From AED 150",
+"cat": "Nightlife",
+"ref": "J193"
+},
+{
+"t": "Katy Perry: New Year's Eve at Atlantis The Palm",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Atlantis The Palm",
+"cat": "Music",
+"ref": "J194"
+},
+{
+"t": "New Year's Eve Under The Stars Gala Dinner Featuring Katy Perry In Dubai",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Atlantis, The Palm",
+"price": "From AED 6500",
+"cat": "Food",
+"ref": "J195"
+},
+{
+"t": "New Year's Eve gala dinner, Business Bay",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Café Délices Terrace, Grand Mercure Business Bay",
+"time": "8pm–1am",
+"price": "AED 550 – 750 · Ages 0–5 free · 6–11 half price",
+"cat": "Food",
+"fam": 1,
+"d": "Buffet dinner and live music with views of Dubai Canal and Burj Khalifa.",
+"ref": "J196"
+},
+{
+"t": "PAWSA | NEW YEAR’S EVE — PACHA ICONS",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Playa Pacha Beach Club, Dubai",
+"price": "From AED 300",
+"cat": "Nightlife",
+"ref": "J197"
+},
+{
+"t": "Vessbroz",
+"s": "2026-12-31",
+"e": "2026-12-31",
+"em": "Dubai",
+"v": "Cavo, Ramee Dream Hotel, Dubai",
+"price": "From AED 150",
+"cat": "Music",
+"ref": "J198"
+},
+{
+"t": "Swan Lake on Ice",
+"s": "2027-01-14",
+"e": "2027-01-17",
+"em": "Dubai",
+"v": "Dubai Opera",
+"cat": "Comedy & Theatre",
+"fam": 1,
+"d": "The Imperial Ice Stars perform Tchaikovsky's ballet on an ice stage.",
+"ref": "J199"
+},
+{
+"t": "Ebru Gündeş live",
+"s": "2027-01-15",
+"e": "2027-01-15",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"price": "Prices not yet published",
+"cat": "Music",
+"ref": "J200"
+},
+{
+"t": "IIFA Weekend 2027",
+"s": "2027-01-22",
+"e": "2027-01-23",
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"cat": "Music",
+"d": "IIFA Digital Awards on 22 Jan with Himesh Reshammiya performing, then the IIFA Awards on 23 Jan.",
+"ref": "J201"
+},
+{
+"t": "RAK Half Marathon (20th edition)",
+"s": "2027-01-30",
+"e": "2027-01-30",
+"em": "Ras Al Khaimah",
+"v": "Al Marjan Island",
+"cat": "Sports & Outdoors",
+"d": "Coastal half marathon; registration is open. Make a weekend of it in Ras Al Khaimah.",
+"ref": "J202"
+},
+{
+"t": "Sitar for Mental Health: Rishab Rikhiram Sharma",
+"s": "2027-01-30",
+"e": "2027-01-30",
+"em": "Dubai",
+"v": "Coca-Cola Arena",
+"cat": "Music",
+"d": "Sitar concert blending classical sound with a modern take on wellbeing.",
+"ref": "J203"
+},
+{
+"t": "Sponge Cola with Karylle",
+"s": "2027-02-13",
+"e": "2027-02-13",
+"em": "Dubai",
+"v": "The Agenda, Dubai Media City",
+"price": "Early-bird tickets on sale",
+"cat": "Music",
+"ref": "J204"
+},
+{
+"t": "UNTOLD Festival Dubai",
+"s": "2027-03-19",
+"e": "2027-03-21",
+"em": "Dubai",
+"v": "Dubai Parks and Resorts",
+"cat": "Nightlife",
+"d": "One of the world's best-known dance music festivals, with big stage design and headliners.",
+"ref": "J205"
+},
+{
+"t": "UNIFYD music festival",
+"s": "2027-03-20",
+"e": "2027-03-20",
+"em": "Abu Dhabi",
+"v": "Etihad Live, Abu Dhabi",
+"cat": "Music",
+"d": "Arijit Singh, Karan Aujla, Sonu Nigam and more on one day.",
+"ref": "J206"
+},
+{
+"t": "Hearts of Veeramani (Tamil concert)",
+"s": "2027-03-28",
+"e": "2027-03-28",
+"em": "Dubai",
+"v": "Dubai Folklore Theatre",
+"cat": "Music",
+"d": "Rescheduled to 28 March 2027.",
+"ref": "J207"
+},
+{
+"t": "World of Dance Dubai (first edition)",
+"s": "2027-04-10",
+"e": "2027-04-10",
+"em": "Dubai",
+"cat": "Sports & Outdoors",
+"d": "International dance competition. Spectator tickets not yet on sale.",
+"ref": "J208"
+},
+{
+"t": "EuroLeague Final Four",
+"s": "2027-05-28",
+"e": "2027-05-30",
+"dates": [
+"2027-05-28",
+"2027-05-30"
+],
+"em": "Abu Dhabi",
+"v": "Etihad Arena, Yas Island",
+"cat": "Sports & Outdoors",
+"d": "Europe's top basketball clubs play the semi-finals and final on 28 and 30 May.",
+"ref": "J209"
+}
+];
+
+const CATS = ["Music","Comedy & Theatre","Family","Festive","Culture & Art","Food","Sports & Outdoors","Shopping & Offers","Nightlife"];
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const ICON = {
+  pin:'<svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>'
+};
+
+const TODAY = new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dubai"}).format(new Date());
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(Date.UTC(y,m-1,d)); };
+const iso = d => d.toISOString().slice(0,10);
+const addDays = (s,n) => { const d = parse(s); d.setUTCDate(d.getUTCDate()+n); return iso(d); };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function onDay(e, day){
+  if (day < e.s || day > e.e) return false;
+  if (e.dates) return e.dates.includes(day);
+  if (e.wd !== undefined) return parse(day).getUTCDay() === e.wd;
+  return true;
+}
+function nextDay(e, from){
+  for (let d = e.s > from ? e.s : from; d <= e.e; d = addDays(d,1)) if (onDay(e,d)) return d;
+  return null;
+}
+function fmtRange(e){
+  const a = parse(e.s), b = parse(e.e);
+  const one = d => `${d.getUTCDate()} ${MON[d.getUTCMonth()]}${d.getUTCFullYear()!==2026?" "+d.getUTCFullYear():""}`;
+  if (e.wd !== undefined) return `Every ${DOW[e.wd]}day until ${one(b)}`.replace("Thuday","Thursday");
+  if (e.s === e.e) return `${DOW[a.getUTCDay()]} ${one(a)}`;
+  return `${one(a)} – ${one(b)}`;
+}
+
+const state = { q:"", em:"", cat:"", fam:false, free:false, week:false, view:"agenda", month:TODAY.slice(0,7), day:null };
+try { const v = localStorage.getItem("jthcal-view"); if (v === "month" || v === "agenda") state.view = v; } catch {}
+
+function matches(e){
+  if (e.e < TODAY) return false;
+  if (state.em && e.em !== state.em) return false;
+  if (state.cat && e.cat !== state.cat) return false;
+  if (state.fam && !e.fam) return false;
+  if (state.free && !e.free) return false;
+  if (state.week && !nextDay(e, TODAY) ) return false;
+  if (state.week && nextDay(e, TODAY) > addDays(TODAY,6)) return false;
+  if (state.q){
+    const hay = [e.t,e.v,e.d,e.em,e.cat,e.ref].join(" ").toLowerCase();
+    if (!state.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
+
+const WA = "971542474274";
+const askLink = e => "https://wa.me/" + WA + "?text=" + encodeURIComponent(`Hi JTH, please share the details for ${e.t} (${fmtRange(e)}), Ref ${e.ref}`);
+function card(e){
+  const price = e.price ? `<span class="tag ${e.free?"free":"price"}">${esc(e.price)}</span>` : `<span class="tag">Price on request</span>`;
+  return `<article class="ev">
+    <h3>${esc(e.t)}</h3>
+    <div class="meta">
+      <span>${ICON.cal}${esc(fmtRange(e))}</span>
+      ${e.time?`<span>${ICON.clock}${esc(e.time)}</span>`:""}
+      <span>${ICON.pin}${esc(e.v ? e.v+", " : "")}${esc(e.em)}</span>
+    </div>
+    ${e.d?`<p>${esc(e.d)}</p>`:""}
+    <div class="tags">${price}<span class="tag cat">${esc(e.cat)}</span>${e.fam?'<span class="tag">Family friendly</span>':""}</div>
+    <div class="foot"><span>Ref ${esc(e.ref)}</span><a class="ask" href="${askLink(e)}" target="_blank" rel="noopener">Ask on WhatsApp</a></div>
+  </article>`;
+}
+
+function dateHead(day){
+  const d = parse(day);
+  const rel = day===TODAY ? "Today" : day===addDays(TODAY,1) ? "Tomorrow" : "";
+  return `<div class="gdate"><div class="dow">${DOW[d.getUTCDay()]}</div><div class="day">${d.getUTCDate()}</div><div class="mon">${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}</div>${rel?`<span class="rel">${rel}</span>`:""}</div>`;
+}
+
+function renderAgenda(list){
+  const now = [], byDay = {};
+  for (const e of list){
+    const multi = e.s !== e.e;
+    if (multi && e.s <= TODAY) { now.push(e); continue; }
+    const k = nextDay(e, TODAY); if (!k) continue;
+    (byDay[k] ||= []).push(e);
+  }
+  now.sort((a,b) => a.e.localeCompare(b.e));
+  let html = "";
+  if (now.length) html += `<section class="group"><div class="gdate"><div class="dow">Running now</div><div class="glabel">On now</div><div class="mon">Sorted by end date</div></div><div class="items">${now.map(card).join("")}</div></section>`;
+  for (const k of Object.keys(byDay).sort())
+    html += `<section class="group">${dateHead(k)}<div class="items">${byDay[k].map(card).join("")}</div></section>`;
+  return html || `<p class="empty">No events match these filters. Try clearing a filter or searching another word.</p>`;
+}
+
+function renderMonth(list){
+  const [y,m] = state.month.split("-").map(Number);
+  const first = new Date(Date.UTC(y,m-1,1));
+  const days = new Date(Date.UTC(y,m,0)).getUTCDate();
+  const minM = TODAY.slice(0,7);
+  const maxM = list.reduce((a,e) => e.e.slice(0,7) > a ? e.e.slice(0,7) : a, minM);
+  const pad = first.getUTCDay();
+  let cells = DOW.map(d => `<div class="wd">${d}</div>`).join("");
+  for (let i=0;i<pad;i++) cells += `<div class="cell out" aria-hidden="true"></div>`;
+  for (let d=1; d<=days; d++){
+    const day = `${state.month}-${String(d).padStart(2,"0")}`;
+    const n = day < TODAY ? 0 : list.filter(e => onDay(e,day)).length;
+    const cls = ["cell", day<TODAY?"past":"", day===TODAY?"today":""].join(" ");
+    cells += `<button class="${cls}" data-day="${day}" aria-pressed="${state.day===day}" ${day<TODAY?"disabled":""} aria-label="${d} ${MONTHS[m-1]}, ${n} events"><span class="n">${d}</span>${n?`<span class="c">${n} event${n>1?"s":""}</span>`:""}</button>`;
+  }
+  const sel = state.day && state.day.startsWith(state.month) ? state.day : null;
+  const dayList = sel ? list.filter(e => onDay(e, sel)) : [];
+  return `<div class="mhead"><button id="prev" aria-label="Previous month" ${state.month<=minM?"disabled":""}>‹</button><h2>${MONTHS[m-1]} ${y}</h2><button id="next" aria-label="Next month" ${state.month>=maxM?"disabled":""}>›</button></div>
+    <div class="grid">${cells}</div>
+    <div class="daylist">${sel ? `<section class="group">${dateHead(sel)}<div class="items">${dayList.length?dayList.map(card).join(""):'<p class="empty">Nothing listed for this day.</p>'}</div></section>` : '<p class="empty">Tap a date to see what is on that day.</p>'}</div>`;
+}
+
+const out = document.getElementById("out");
+function render(){
+  const list = EVENTS.filter(matches);
+  out.innerHTML = state.view === "agenda" ? renderAgenda(list) : renderMonth(list);
+  document.getElementById("vAgenda").setAttribute("aria-pressed", state.view==="agenda");
+  document.getElementById("vMonth").setAttribute("aria-pressed", state.view==="month");
+  document.querySelectorAll("#cats .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.cat===state.cat));
+  if (state.view === "month"){
+    out.querySelectorAll(".cell[data-day]").forEach(b => b.addEventListener("click", () => { state.day = b.dataset.day; render(); }));
+    const step = n => { const [y,m] = state.month.split("-").map(Number); const d = new Date(Date.UTC(y,m-1+n,1)); state.month = iso(d).slice(0,7); state.day = null; render(); };
+    document.getElementById("prev")?.addEventListener("click", () => step(-1));
+    document.getElementById("next")?.addEventListener("click", () => step(1));
+  }
+}
+
+const live = EVENTS.filter(e => e.e >= TODAY);
+const weekN = live.filter(e => { const n = nextDay(e,TODAY); return n && n <= addDays(TODAY,6); }).length;
+document.getElementById("stats").innerHTML =
+  `<span><b>${live.length}</b> upcoming listings</span><span><b>${weekN}</b> in the next 7 days</span><span><b>${new Set(live.map(e=>e.em)).size}</b> Emirates</span>`;
+
+document.getElementById("cats").innerHTML = `<button class="chip" data-cat="">All</button>` + CATS.map(c => `<button class="chip" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+document.querySelectorAll("#cats .chip").forEach(c => c.addEventListener("click", () => { state.cat = c.dataset.cat; render(); }));
+document.getElementById("q").addEventListener("input", e => { state.q = e.target.value.trim(); render(); });
+document.getElementById("em").addEventListener("change", e => { state.em = e.target.value; render(); });
+document.getElementById("fFam").addEventListener("change", e => { state.fam = e.target.checked; render(); });
+document.getElementById("fFree").addEventListener("change", e => { state.free = e.target.checked; render(); });
+document.getElementById("fWeek").addEventListener("change", e => { state.week = e.target.checked; render(); });
+const setView = v => { state.view = v; try { localStorage.setItem("jthcal-view", v); } catch {} render(); };
+document.getElementById("vAgenda").addEventListener("click", () => setView("agenda"));
+document.getElementById("vMonth").addEventListener("click", () => setView("month"));
+document.getElementById("waCopy").addEventListener("click", async e => {
+  const b = e.currentTarget, num = "+971542474274";
+  try { await navigator.clipboard.writeText(num); b.textContent = "Copied"; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("waNum")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Selected, press copy"; }
+  setTimeout(() => { b.textContent = "Copy number"; }, 2500);
+});
+render();
+</script>
+
+</body>
+</html>
