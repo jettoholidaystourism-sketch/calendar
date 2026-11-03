@@ -115,6 +115,9 @@ main .wrap{padding-block:8px 40px}
 .ev{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:200px minmax(0,1fr);overflow:hidden;min-width:0}
 .ev .pic{position:relative;background:var(--navy);min-height:100%}
 .ev .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ev .pic.none{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gold);background:#111827 url("img/pattern.webp") center/180px repeat;background-blend-mode:soft-light;min-height:150px}
+.ev .pic.none svg{width:38px;height:38px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ev .pic.none span{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:#D9D4C3}
 .ev .body{padding:14px 16px;display:grid;gap:6px;min-width:0;align-content:start}
 .ev h3{margin:0;font:700 16.5px/1.3 var(--body);text-wrap:balance}
 .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:var(--muted)}
@@ -342,7 +345,7 @@ const EVENTS = [
 "em": "Dubai",
 "v": "Waldorf Astoria DIFC",
 "price": "From AED 200",
-"cat": "Music",
+"cat": "Food",
 "ref": "J005"
 },
 {
@@ -403,7 +406,7 @@ const EVENTS = [
 "em": "Dubai",
 "v": "Dubai Festival City Mall",
 "price": "From AED 100",
-"cat": "Family",
+"cat": "Comedy & Theatre",
 "fam": 1,
 "ref": "J011"
 },
@@ -1160,7 +1163,7 @@ const EVENTS = [
 "em": "Sharjah",
 "price": "Free",
 "free": 1,
-"cat": "Family",
+"cat": "Festive",
 "fam": 1,
 "d": "Free car show series: Al Heera Beach on 14 Nov, Al Majaz on 12 Dec and Khorfakkan on 16 Jan 2027.",
 "ref": "J081"
@@ -1171,7 +1174,7 @@ const EVENTS = [
 "e": "2026-11-14",
 "em": "Dubai",
 "v": "New Covent Garden Theatre, Dubai",
-"cat": "Comedy & Theatre",
+"cat": "Music",
 "ref": "J082"
 },
 {
@@ -1344,11 +1347,12 @@ const EVENTS = [
 "ref": "J098"
 },
 {
-"t": "Keinemusik (full trio), 21 Nov, Bab Al Shams Arena (from AED 375)",
+"t": "Keinemusik (full trio)",
 "s": "2026-11-21",
 "e": "2026-11-21",
 "em": "Dubai",
 "v": "Bab Al Shams Arena",
+"price": "From AED 375",
 "cat": "Nightlife",
 "ref": "J099"
 },
@@ -1514,7 +1518,7 @@ const EVENTS = [
 "e": "2026-11-27",
 "em": "Abu Dhabi",
 "v": "Etihad Arena, Abu Dhabi",
-"cat": "Music",
+"cat": "Comedy & Theatre",
 "ref": "J115"
 },
 {
@@ -2169,7 +2173,7 @@ const EVENTS = [
 "em": "Dubai",
 "v": "Dubai Opera, Main Auditorium",
 "price": "From AED 230",
-"cat": "Family",
+"cat": "Comedy & Theatre",
 "fam": 1,
 "ref": "J178"
 },
@@ -2180,7 +2184,7 @@ const EVENTS = [
 "em": "Abu Dhabi",
 "v": "Etihad Arena",
 "price": "From AED 80",
-"cat": "Family",
+"cat": "Music",
 "fam": 1,
 "ref": "J179"
 },
@@ -2251,7 +2255,7 @@ const EVENTS = [
 "em": "Abu Dhabi",
 "v": "Etihad Arena",
 "price": "From AED 80",
-"cat": "Family",
+"cat": "Music",
 "fam": 1,
 "ref": "J186"
 },
@@ -2546,43 +2550,94 @@ function matches(e){
   return true;
 }
 
-// Category pictures: a keyword match picks the closest one, otherwise the listing number rotates through the set.
-const PICS = {
-  "Music": ["cat-music","cat-music-2","cat-music-3","cat-music-4","cat-music-5"],
-  "Comedy & Theatre": ["cat-comedy-theatre","cat-comedy-theatre-2"],
-  "Family": ["cat-family","cat-family-2"],
-  "Festive": ["cat-festive","cat-festive-2"],
-  "Culture & Art": ["cat-culture-art","cat-culture-art-2"],
-  "Food": ["cat-food","cat-food-2","cat-food-3"],
-  "Sports & Outdoors": ["cat-sports-outdoors","cat-sports-2","cat-sports-3","cat-sports-4"],
-  "Shopping & Offers": ["cat-shopping-offers","cat-shopping-2"],
-  "Nightlife": ["cat-nightlife","cat-nightlife-2","cat-nightlife-3"]
-};
+// Pictures. Each rule names one photo and the events it truly shows; the first matching rule wins.
+// What each photo shows (so a rule only points a photo at events like it):
+//   cat-music            arena concert crowd, hands up, stage lights
+//   cat-music-2          opera house with an orchestra on stage
+//   cat-music-3          string quartet surrounded by candles (Candlelight concerts only)
+//   cat-music-4          Emirati musician playing the oud in a majlis (oud / Arabic live music)
+//   cat-music-5          outdoor desert festival stage with majlis seating
+//   cat-nightlife-3      singer in a gown with an orchestra, outdoors at night (classical / gala singer)
+//   cat-comedy-theatre   empty stage, red curtains, one microphone (theatre, musicals, cabaret)
+//   cat-comedy-theatre-2 comedy club audience facing a mic and stool (stand-up)
+//   cat-family           family walking into a theme park at dusk
+//   cat-family-2         children watching a cartoon puppet show (children's theatre only)
+//   cat-festive          night market with lanterns and diya lamps (Diwali / Indian festivals)
+//   cat-festive-2        desert heritage camp with camel and fort (heritage festivals)
+//   cat-culture-art      museum gallery under a lattice dome (museum exhibitions)
+//   cat-culture-art-2    paintings on easels on a waterfront (art fairs)
+//   cat-food             Arabic mezze dinner table with skyline (dinners, food festivals)
+//   cat-food-2           afternoon tea stand (breakfast, brunch, tea)
+//   cat-food-3           aerial silk acrobat above dinner tables (dinner shows, circus)
+//   cat-sports-outdoors  4x4 on desert dunes
+//   cat-sports-2         sailing boats with UAE flags (sailing, boat shows)
+//   cat-sports-3         runners on a city road (runs, triathlon)
+//   cat-sports-4         cricket stadium at night (cricket, rugby)
+//   cat-shopping-offers  gold souk walkway (sales)
+//   cat-shopping-2       outdoor community market stalls (markets)
+//   cat-nightlife        rooftop lounge with DJ booth over the city (rooftop and club nights)
+//   cat-nightlife-2      beach club at sunset (beach clubs)
+//   season-* / em-*      Diwali diyas, Christmas tree, New Year fireworks, National Day; emirate scenes
 const PIC_RULES = [
-  [/candlelight|quartet|mozart|chopin|vivaldi|einaudi/i, "cat-music-3"],
-  [/opera|orchestra|philharmonic|ballet|bolshoi|nutcracker|swan lake|bocelli|verdi|tenor|matsuev|symphony|classical|batiashvili|minsoo|madrigal/i, "cat-music-2"],
-  [/oud|angham|amr diab|ramy sabry|manoukian|dhafer|tarab|bu kolthoum|fairuz|arab/i, "cat-music-4"],
-  [/festival|untold|unifyd|in the park|sole dxb|dopa world|iifa/i, "cat-music-5"],
-  [/stand-?up|comedy|comic|jobrani|trevor noah|bassi|schulz|spears|double trouble|imaginesan|mina nader/i, "cat-comedy-theatre-2"],
-  [/puppet|caterpillar|musical|elf|encanto|lion king|abracadabra|show|theatre|big dreams/i, "cat-family-2"],
-  [/desert|liwa|heritage|national day|eid al etihad|sheikh zayed festival|camel/i, "cat-festive-2"],
-  [/frieze|nomad|sculpture|art fair|world art|biennial|design week|makers/i, "cat-culture-art-2"],
-  [/afternoon tea|breakfast|brunch|lunch|\btea\b/i, "cat-food-2"],
-  [/dinner show|dream|perle|circus|cabaret/i, "cat-food-3"],
-  [/sail|boat|yacht|paddle|kayak/i, "cat-sports-2"],
-  [/\brun\b|marathon|triathlon|\bride\b|fitness|yoga/i, "cat-sports-3"],
-  [/cricket|ilt20|stadium|sevens|\b7s\b|padel|fiba|euroleague|wrestling|freestyle|fight|boxing|pfl|nemkov/i, "cat-sports-4"],
-  [/hatta|dune|nitro|balloon|action flight|mountain|turf|horse/i, "cat-sports-outdoors"],
-  [/market|ripe|makers/i, "cat-shopping-2"],
-  [/beach|ushua|cabana|playa|harbour|bohemia/i, "cat-nightlife-2"],
-  [/b2b|presents|\bdj\b|carola|capriati|anyma|artbat|pacha|soho|hive/i, "cat-nightlife-3"]
+  [/candlelight/i, "cat-music-3"],
+  [/dhafer youssef|sahar al layali/i, "cat-music-4"],
+  [/^abu dhabi festival\b/i, "cat-music-2"],
+  [/new year|\bnye\b/i, "season-new-year"],
+  [/christmas|\bsanta\b|winter city|winter festival|festive season/i, "season-christmas"],
+  [/eid al etihad|national day/i, "season-national-day"],
+  [/candlelight/i, "cat-music-3"],
+  [/very hungry caterpillar|big dreams, little wings|mission elf possible|elf in the gulf/i, "cat-family-2"],
+  [/festival of lights|diwali menus/i, "season-diwali"],
+  [/diwali|beats of india/i, "cat-festive"],
+  [/sheikh zayed festival|liwa international|hunting & equestrian|furusiyya/i, "cat-festive-2"],
+  [/action flight|hatta/i, "em-ras-al-khaimah"],
+  [/sharjah film|book fair|motor fest/i, "em-sharjah"],
+  [/dream dinner|la perle|circus spectacular/i, "cat-food-3"],
+  [/nitro circus/i, "cat-sports-outdoors"],
+  [/sail grand prix|boat show/i, "cat-sports-2"],
+  [/\brun\b|marathon|triathlon|fitness challenge/i, "cat-sports-3"],
+  [/ilt20|dubai 7s/i, "cat-sports-4"],
+  [/legoland|motiongate|ferrari world/i, "cat-family"],
+  [/ripe market|makers market/i, "cat-shopping-2"],
+  [/\bsale\b/i, "cat-shopping-offers"],
+  [/louvre|art here|living legacies|matter of light|design week/i, "cat-culture-art"],
+  [/frieze|nomad abu dhabi|world art|biennial|focal point/i, "cat-culture-art-2"],
+  [/opera gala|hiba tawaji/i, "cat-nightlife-3"],
+  [/orchestra|philharmonic|bolshoi|nutcracker|swan lake|ballet|tsar|matsuev|minsoo|batiashvili|madrigal|minnelli|ministry of sound classical|jazz room|enrico macias|guy manoukian|algarabia|bocelli|lion king|encanto/i, "cat-music-2"],
+  [/in the park|untold|unifyd|dopa world|sole dxb|pereras|handawaka|keinemusik/i, "cat-music-5"],
+  [/anyma/i, "cat-music"],
+  [/stand-?up|comedy|trevor noah|jobrani|schulz|spears|bassi|mo amer|double trouble/i, "cat-comedy-theatre-2"],
+  [/chicago|musical|crazy horse|jury experience|abracadabra|ye jo hans|fright nights/i, "cat-comedy-theatre"],
+  [/afternoon tea|breakfast|brunch/i, "cat-food-2"],
+  [/bohemia|playa pacha|ushua|skydive/i, "cat-nightlife-2"],
+  [/pacha icons|soho garden|hive|penthouse|skyline saturdays|vessbroz|harat|make friends/i, "cat-nightlife"]
 ];
+// Safe defaults by category; categories with no photo that fits most of their events get the designed card instead.
+const PIC_DEFAULT = {"Music":"cat-music", "Food":"cat-food", "Comedy & Theatre":"cat-comedy-theatre", "Nightlife":"cat-nightlife"};
+// Events whose subject none of the photos show (fights, basketball, padel, yoga, horse racing, board games, digital art...).
+const NO_PIC = /kinugawa|yin & yang|alone in the universe|tabletop|fiba|padel|nemkov|freestyle|jake paul|euroleague|bodybuilding|world of dance|yoga|turf|horse racing/i;
 function picFor(e){
-  const set = PICS[e.cat] || PICS.Music;
   const text = e.t + " " + (e.v || "");
-  for (const [re, pic] of PIC_RULES) if (set.includes(pic) && re.test(text)) return pic;
-  return set[(parseInt(e.ref.slice(1), 10) || 0) % set.length];
+  if (NO_PIC.test(text)) return null;
+  for (const [re, pic] of PIC_RULES) if (re.test(text)) return pic;
+  return PIC_DEFAULT[e.cat] || null;
 }
+const CAT_ICON = {
+  "Music": '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  "Comedy & Theatre": '<path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10a7 7 0 0 1-14 0M12 17v5M8 22h8"/>',
+  "Family": '<circle cx="8" cy="6" r="2.5"/><circle cx="16" cy="7" r="2"/><path d="M4 21v-6a4 4 0 0 1 8 0v6M13 21v-4a3 3 0 0 1 6 0v4"/>',
+  "Festive": '<path d="M12 2l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 16.8 6.1 20l1.3-6.6L2.5 8.9l6.6-.8z"/>',
+  "Culture & Art": '<rect x="3" y="4" width="18" height="14" rx="1"/><path d="M3 15l5-5 4 4 3-3 6 6M8 22h8"/>',
+  "Food": '<path d="M3 11h18a9 9 0 0 1-18 0zM12 2v4M8 4v2M16 4v2"/>',
+  "Sports & Outdoors": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
+  "Shopping & Offers": '<path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/>',
+  "Nightlife": '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'
+};
+const picBlock = e => {
+  const p = picFor(e);
+  if (p) return `<div class="pic"><img src="img/${p}.webp" alt="" loading="lazy" decoding="async" width="720" height="480"></div>`;
+  return `<div class="pic none" aria-hidden="true"><svg viewBox="0 0 24 24">${CAT_ICON[e.cat] || CAT_ICON.Festive}</svg><span>${esc(e.cat)}</span></div>`;
+};
 
 // Photo banners shown above the list for a chosen emirate, and before the first day of each season.
 const EMIRATES = {
@@ -2605,7 +2660,7 @@ const askLink = e => "https://wa.me/" + WA + "?text=" + encodeURIComponent(`Hi J
 function card(e){
   const price = e.price ? `<span class="tag ${e.free?"free":"price"}">${esc(e.price)}</span>` : `<span class="tag">Price on request</span>`;
   return `<article class="ev">
-    <div class="pic"><img src="img/${picFor(e)}.webp" alt="" loading="lazy" decoding="async" width="720" height="480"></div>
+    ${picBlock(e)}
     <div class="body">
     <h3>${esc(e.t)}</h3>
     <div class="meta">
