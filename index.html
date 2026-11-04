@@ -2651,7 +2651,7 @@ const CAT_ICON = {
   "Nightlife": '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'
 };
 const picBlock = e => {
-  const p = picFor(e);
+  const p = e.img || picFor(e);   // a listing's own picture (img/ev/J005.webp) wins over the shared ones
   if (p) return `<div class="pic"><img src="img/${p}.webp" alt="" loading="lazy" decoding="async" width="720" height="480"></div>`;
   return `<div class="pic none" aria-hidden="true"><svg viewBox="0 0 24 24">${CAT_ICON[e.cat] || CAT_ICON.Festive}</svg><span>${esc(e.cat)}</span></div>`;
 };
