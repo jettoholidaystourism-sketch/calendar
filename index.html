@@ -2578,6 +2578,10 @@ function matches(e){
 //   cat-nightlife        rooftop lounge with DJ booth over the city (rooftop and club nights)
 //   cat-nightlife-2      beach club at sunset (beach clubs)
 //   season-* / em-*      Diwali diyas, Christmas tree, New Year fireworks, National Day; emirate scenes
+//   cat-fight, -basketball, -padel, -yoga, -horse-racing, -board-games, -digital-art, -japanese-dining, -dance, -fitness
+//   cat-music-arabic     arena stage framed by gold Arabic arches · cat-music-indian  saffron/magenta arena show
+//   cat-music-pop        outdoor stadium show with screens and confetti · cat-music-intimate  guitarist in a small candlelit room
+//   cat-nightlife-dj     DJ from behind at an open-air venue with lasers
 const PIC_RULES = [
   [/candlelight/i, "cat-music-3"],
   [/dhafer youssef|sahar al layali/i, "cat-music-4"],
@@ -2585,7 +2589,16 @@ const PIC_RULES = [
   [/new year|\bnye\b/i, "season-new-year"],
   [/christmas|\bsanta\b|winter city|winter festival|festive season/i, "season-christmas"],
   [/eid al etihad|national day/i, "season-national-day"],
-  [/candlelight/i, "cat-music-3"],
+  [/nemkov|freestyle|wrestling|jake paul|boxing|fight night/i, "cat-fight"],
+  [/fiba|euroleague|basketball/i, "cat-basketball"],
+  [/padel/i, "cat-padel"],
+  [/yoga/i, "cat-yoga"],
+  [/horse racing|turf club/i, "cat-horse-racing"],
+  [/tabletop|board game/i, "cat-board-games"],
+  [/yin & yang|digital art/i, "cat-digital-art"],
+  [/kinugawa|japanese|sushi/i, "cat-japanese-dining"],
+  [/world of dance/i, "cat-dance"],
+  [/bodybuilding/i, "cat-fitness"],
   [/very hungry caterpillar|big dreams, little wings|mission elf possible|elf in the gulf/i, "cat-family-2"],
   [/festival of lights|diwali menus/i, "season-diwali"],
   [/diwali|beats of india/i, "cat-festive"],
@@ -2605,17 +2618,21 @@ const PIC_RULES = [
   [/opera gala|hiba tawaji/i, "cat-nightlife-3"],
   [/orchestra|philharmonic|bolshoi|nutcracker|swan lake|ballet|tsar|matsuev|minsoo|batiashvili|madrigal|minnelli|ministry of sound classical|jazz room|enrico macias|guy manoukian|algarabia|bocelli|lion king|encanto/i, "cat-music-2"],
   [/in the park|untold|unifyd|dopa world|sole dxb|pereras|handawaka|keinemusik/i, "cat-music-5"],
-  [/anyma/i, "cat-music"],
+  [/amr diab|angham|ramy sabry|tarkan|ebru|bredx/i, "cat-music-arabic"],
+  [/atif aslam|sid sriram|rahat fateh|hariharan|iifa|mohanlal|anuv jain|veeramani|rikhiram|sitar/i, "cat-music-indian"],
+  [/rahgir|mg the og|mathaka yathra|when chai met toast|re-inkarnation|synthony/i, "cat-music-intimate"],
+  [/imagine dragons|capaldi|chainsmokers|grand prix after-race|jony|ghostly kisses|secondhand serenade|stephen speaks|sponge cola/i, "cat-music-pop"],
+  [/anyma|pacha icons|soho garden|hive|capriati|charlotte de witte|marco carola|nemiga|harat|vessbroz/i, "cat-nightlife-dj"],
   [/stand-?up|comedy|trevor noah|jobrani|schulz|spears|bassi|mo amer|double trouble/i, "cat-comedy-theatre-2"],
   [/chicago|musical|crazy horse|jury experience|abracadabra|ye jo hans|fright nights/i, "cat-comedy-theatre"],
   [/afternoon tea|breakfast|brunch/i, "cat-food-2"],
   [/bohemia|playa pacha|ushua|skydive/i, "cat-nightlife-2"],
-  [/pacha icons|soho garden|hive|penthouse|skyline saturdays|vessbroz|harat|make friends/i, "cat-nightlife"]
+  [/penthouse|skyline saturdays|make friends/i, "cat-nightlife"]
 ];
 // Safe defaults by category; categories with no photo that fits most of their events get the designed card instead.
 const PIC_DEFAULT = {"Music":"cat-music", "Food":"cat-food", "Comedy & Theatre":"cat-comedy-theatre", "Nightlife":"cat-nightlife"};
 // Events whose subject none of the photos show (fights, basketball, padel, yoga, horse racing, board games, digital art...).
-const NO_PIC = /kinugawa|yin & yang|alone in the universe|tabletop|fiba|padel|nemkov|freestyle|jake paul|euroleague|bodybuilding|world of dance|yoga|turf|horse racing/i;
+const NO_PIC = /alone in the universe/i;
 function picFor(e){
   const text = e.t + " " + (e.v || "");
   if (NO_PIC.test(text)) return null;
