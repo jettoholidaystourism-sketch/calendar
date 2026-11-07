@@ -182,9 +182,12 @@ main .wrap{padding-block:8px 40px}
 /* JTH band */
 .jth{position:relative;background:var(--navy);color:var(--mast-ink);isolation:isolate}
 .jth::before{content:"";position:absolute;inset:0;z-index:-1;background:url("img/pattern.webp") center/260px repeat;opacity:.08}
-.jth .wrap{padding-block:30px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr) auto;gap:20px 30px;align-items:center}
-.jth-pic{width:100%;max-width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;display:block;border:1px solid rgba(212,175,55,.35)}
-@media (max-width:860px){.jth .wrap{grid-template-columns:minmax(0,1fr)}.jth-pic{max-width:520px}}
+/* picture on the left at its own shape (whole van visible); text above the contact details on the right */
+.jth .wrap{padding-block:36px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-areas:"pic text" "pic contact";gap:18px 36px;align-items:end}
+.jth-pic{grid-area:pic;align-self:center;width:100%;max-width:100%;height:auto;aspect-ratio:1513/1040;object-fit:cover;border-radius:14px;display:block;border:1px solid rgba(212,175,55,.35);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.jth .wrap > div:not(.contact){grid-area:text}
+.jth .contact{grid-area:contact;align-self:start}
+@media (max-width:860px){.jth .wrap{grid-template-columns:minmax(0,1fr);grid-template-areas:"pic" "text" "contact"}}
 .jth h2{margin:0 0 4px;font:400 22px var(--display);color:var(--gold)}
 .jth p{margin:0;color:var(--mast-muted);max-width:56ch;font-size:14px}
 .jth a.cta{display:inline-block;background:var(--gold);color:#111827;font-weight:700;text-decoration:none;border-radius:10px;padding:10px 16px}
@@ -290,7 +293,7 @@ main .wrap{padding-block:8px 40px}
 
 <section class="jth">
   <div class="wrap">
-    <img class="jth-pic" src="img/jth-transport.webp" alt="Chauffeur holding the door of a private van at a hotel entrance" width="1100" height="725" loading="lazy">
+    <img class="jth-pic" src="img/jth-transport.webp" alt="A black JTH family van waiting at a hotel entrance at night" width="1513" height="1040" loading="lazy">
     <div>
       <h2>Getting there with JTH</h2>
       <p>Private sedans, family vans and coaches with a driver, from your hotel to the door and back. Send us the event name, date and number of guests on WhatsApp and we will quote the ride, and help with tickets where we can.</p>
