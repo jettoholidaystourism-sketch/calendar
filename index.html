@@ -63,6 +63,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .dots button{width:26px;height:26px;border:0;background:transparent;padding:0;cursor:pointer;display:grid;place-items:center}
 .dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(243,240,230,.45);transition:width .3s,background .3s}
 .dots button[aria-current="true"]::before{width:22px;border-radius:5px;background:var(--gold)}
+.slide-label small{display:block;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.slide-ask{background:var(--gold);color:#111827;font-weight:700;font-size:13px;text-decoration:none;border-radius:9px;padding:7px 12px;white-space:nowrap}
+.slide-ask:hover{background:color-mix(in srgb,var(--gold) 85%,#fff)}
+.slide-count{display:none;font-size:12px;color:#D9D4C3;font-variant-numeric:tabular-nums}
+@media (max-width:899px){.dots{display:none}.slide-count{display:inline}}
+.slide-label{max-width:300px;text-align:right}
+@media (min-width:641px) and (max-width:899px){.mast .wrap{padding-bottom:84px}}
 .slide-pause{width:30px;height:30px;border-radius:50%;border:1px solid rgba(243,240,230,.45);background:rgba(10,14,22,.35);color:#F3F0E6;display:grid;place-items:center;cursor:pointer;padding:0}
 .slide-pause svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
 .mast::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,14,22,.94) 0%,rgba(10,14,22,.82) 38%,rgba(10,14,22,.25) 78%,rgba(10,14,22,.1) 100%)}
@@ -220,8 +227,9 @@ main .wrap{padding-block:8px 40px}
   .search{flex-basis:100%}
   #em{flex:1 1 auto;min-width:0}
   .mast .wrap{padding-block:28px 58px;gap:14px}
-  .slide-label{display:none}
-  .mast-pic img.slide{object-position:center}
+  .slide-label,.dots{display:none}
+  .slide-count{display:inline}
+  .mast-pic img.slide{object-position:62% center}
   .mast h1{font-size:clamp(30px,9vw,38px)}
   .hero-cta .cta,.hero-cta .ghost{flex:1 1 auto;text-align:center}
   .foot .ask{padding:9px 14px}
@@ -239,15 +247,26 @@ main .wrap{padding-block:8px 40px}
 <header class="mast">
   <div class="mast-pic" id="slides" aria-hidden="true">
     <picture class="slide on" data-label="Dubai skyline at night"><source media="(max-width:640px)" srcset="img/hero-mobile.webp"><img src="img/slide-1.webp" alt="" width="1820" height="1200" fetchpriority="high"></picture>
-    <img class="slide" data-src="img/slide-2.webp" data-label="Sunrise balloons over the desert" alt="" width="1536" height="949">
-    <img class="slide" data-src="img/slide-3.webp" data-label="Heritage festival nights" alt="" width="1536" height="917">
-    <img class="slide" data-src="img/slide-4.webp" data-label="Big arena concerts" alt="" width="1536" height="932">
-    <img class="slide" data-src="img/slide-5.webp" data-label="Brunch by the marina" alt="" width="1536" height="954">
-    <img class="slide" data-src="img/slide-6.webp" data-label="New Year fireworks" alt="" width="1536" height="918">
+    <img class="slide" data-src="img/tour-S01.webp" data-label="Private full-day Hatta tour" data-tour="Private full-day Hatta tour" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S02.webp" data-label="Hatta kayaking" data-tour="Hatta kayaking" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S03.webp" data-label="Hatta hiking and mountain biking" data-tour="Hatta hiking and mountain biking" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S04.webp" data-label="Zorbing in Hatta" data-tour="Zorbing in Hatta" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S05.webp" data-label="Hatta Wadi Hub adventures" data-tour="Hatta Wadi Hub adventures" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S06.webp" data-label="Full-day Khorfakkan tour" data-tour="Full-day Khorfakkan tour" alt="" width="1536" height="1024">
+    <img class="slide" data-src="img/tour-S07.webp" data-label="3-in-1 East Coast tour" data-tour="3-in-1 East Coast tour: Kalba, Fujairah and Khorfakkan" alt="" width="1672" height="941">
+    <img class="slide" data-src="img/tour-S08.webp" data-label="6 Emirates in one day" data-tour="6 Emirates in one day" alt="" width="1672" height="941">
+    <img class="slide" data-src="img/tour-S09.webp" data-label="Emirates Park Zoo family day" data-tour="Emirates Park Zoo family day" alt="" width="1672" height="941">
+    <img class="slide" data-src="img/tour-S10.webp" data-label="Musandam dhow cruise" data-tour="Musandam dhow cruise" alt="" width="1672" height="941">
+    <img class="slide" data-src="img/tour-S11.webp" data-label="Dibba and Fujairah cruise" data-tour="Dibba and Fujairah cruise" alt="" width="1672" height="941">
+    <img class="slide" data-src="img/tour-S12.webp" data-label="Boat tour" data-tour="Boat tour" alt="" width="1774" height="887">
+    <img class="slide" data-src="img/tour-S13.webp" data-label="Desert land tour" data-tour="Desert land tour" alt="" width="1774" height="887">
+    <img class="slide" data-src="img/tour-S14.webp" data-label="Half-day city tour" data-tour="Half-day city tour" alt="" width="1672" height="941">
   </div>
   <div class="slide-ctrl" role="group" aria-label="Banner pictures">
     <span class="slide-label" id="slideLabel">Dubai skyline at night</span>
+    <a class="slide-ask" id="slideAsk" href="#" target="_blank" rel="noopener" hidden>Ask about this tour</a>
     <span class="dots" id="slideDots"></span>
+    <span class="slide-count" id="slideCount" aria-live="off">1 / 15</span>
     <button type="button" class="slide-pause" id="slidePause" aria-label="Pause the banner pictures"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
   </div>
   <div class="wrap">
@@ -540,7 +559,8 @@ const EVENTS = [
 "v": "Mirage City Cinema, Sharjah",
 "cat": "Culture & Art",
 "fam": 1,
-"ref": "J019"
+"ref": "J019",
+"img": "ev/J019"
 },
 {
 "t": "Sheikh Zayed Festival",
@@ -618,7 +638,8 @@ const EVENTS = [
 "cat": "Culture & Art",
 "fam": 1,
 "d": "Free, all-ages design festival with installations, exhibitions, talks and hands-on workshops. The outdoor Marketplace of independent makers runs 7–8 Nov; Downtown Design runs alongside on 4–8 Nov.",
-"ref": "J026"
+"ref": "J026",
+"img": "ev/J026"
 },
 {
 "t": "Ferrari World Roof Walk",
@@ -641,7 +662,8 @@ const EVENTS = [
 "v": "MOTIONGATE Dubai, Dubai Parks and Resorts",
 "cat": "Comedy & Theatre",
 "d": "Halloween parade, The Addams Family musical and haunted experiences including SAW, The Mummy and La Llorona. Scary for young children.",
-"ref": "J028"
+"ref": "J028",
+"img": "ev/J028"
 },
 {
 "t": "Halloween at LEGOLAND Dubai (extended)",
@@ -663,7 +685,8 @@ const EVENTS = [
 "cat": "Festive",
 "fam": 1,
 "d": "Festive games, family workshops and free henna. Spend AED 200 or more to pick a lucky diya and win gift cards.",
-"ref": "J030"
+"ref": "J030",
+"img": "ev/J030"
 },
 {
 "t": "Make Friends Dubai (weekly meet-up)",
@@ -691,7 +714,8 @@ const EVENTS = [
 "cat": "Shopping & Offers",
 "fam": 1,
 "d": "Clothing for women, men and kids, plus shoes and swimwear. Go early, it gets busy.",
-"ref": "J032"
+"ref": "J032",
+"img": "ev/J032"
 },
 {
 "t": "Public Art Abu Dhabi Biennial",
@@ -795,7 +819,8 @@ const EVENTS = [
 "cat": "Family",
 "fam": 1,
 "d": "Colourful family stage show with performances for children and parents.",
-"ref": "J041"
+"ref": "J041",
+"img": "ev/J041"
 },
 {
 "t": "Diwali night with Kavita Seth",
@@ -853,7 +878,8 @@ const EVENTS = [
 "cat": "Family",
 "fam": 1,
 "d": "More than 250 board games to play, RPG sessions, trading cards, miniatures and tournaments.",
-"ref": "J046"
+"ref": "J046",
+"img": "ev/J046"
 },
 {
 "t": "Amr Diab 2026",
@@ -913,7 +939,8 @@ const EVENTS = [
 "v": "Dubai",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J052"
+"ref": "J052",
+"img": "ev/J052"
 },
 {
 "t": "Jonas Blue | Skyline Saturdays at The Penthouse",
@@ -1007,7 +1034,8 @@ const EVENTS = [
 "cat": "Food",
 "fam": 1,
 "d": "Festive buffet with dhol beats, dance and Diwali décor.",
-"ref": "J061"
+"ref": "J061",
+"img": "ev/J061"
 },
 {
 "t": "Diwali menus at Bait Al Ahlam",
@@ -1019,7 +1047,8 @@ const EVENTS = [
 "cat": "Food",
 "fam": 1,
 "d": "Special vegetarian and vegan set menus with a complimentary sweets buffet on 8, 9 and 10 Nov.",
-"ref": "J062"
+"ref": "J062",
+"img": "ev/J062"
 },
 {
 "t": "Emaar Dubai Premier Padel P1",
@@ -1043,7 +1072,8 @@ const EVENTS = [
 "cat": "Music",
 "fam": 1,
 "d": "Live bands, a rodeo bull, axe throwing and a new kids area. Kids and nannies go free.",
-"ref": "J064"
+"ref": "J064",
+"img": "ev/J064"
 },
 {
 "t": "The Very Hungry Caterpillar",
@@ -1065,7 +1095,8 @@ const EVENTS = [
 "cat": "Culture & Art",
 "fam": 1,
 "d": "Sixth edition of the Louvre Abu Dhabi contemporary art show and Richard Mille Art Prize, exploring the shared history of India and the Gulf.",
-"ref": "J066"
+"ref": "J066",
+"img": "ev/J066"
 },
 {
 "t": "ANOTR @ Pacha ICONS Playa Pacha",
@@ -2682,7 +2713,8 @@ const EVENTS = [
 "em": "Dubai",
 "cat": "Sports & Outdoors",
 "d": "International dance competition. Spectator tickets not yet on sale.",
-"ref": "J208"
+"ref": "J208",
+"img": "ev/J208"
 },
 {
 "t": "EuroLeague Final Four",
@@ -2696,7 +2728,8 @@ const EVENTS = [
 "v": "Etihad Arena, Yas Island",
 "cat": "Sports & Outdoors",
 "d": "Europe's top basketball clubs play the semi-finals and final on 28 and 30 May.",
-"ref": "J209"
+"ref": "J209",
+"img": "ev/J209"
 }
 ];
 
@@ -2991,6 +3024,7 @@ document.getElementById("pbFilters").addEventListener("click", () => {
 (() => {
   const slides = [...document.querySelectorAll("#slides .slide")];
   const dots = document.getElementById("slideDots"), label = document.getElementById("slideLabel"), pause = document.getElementById("slidePause");
+  const ask = document.getElementById("slideAsk"), count = document.getElementById("slideCount");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let cur = 0, timer = null, paused = still;
   const load = el => { const img = el.tagName === "IMG" ? el : el.querySelector("img"); if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; } };
@@ -3000,7 +3034,11 @@ document.getElementById("pbFilters").addEventListener("click", () => {
     cur = (i + slides.length) % slides.length;
     load(slides[cur]); slides[cur].classList.add("on");
     load(slides[(cur + 1) % slides.length]);
-    label.textContent = slides[cur].dataset.label;
+    const tour = slides[cur].dataset.tour;
+    label.innerHTML = (tour ? "<small>JTH tour</small>" : "") + esc(slides[cur].dataset.label);
+    ask.hidden = !tour;
+    if (tour) ask.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(`Hi JTH, I'm interested in the ${tour}. Please share the details and price.`);
+    count.textContent = (cur + 1) + " / " + slides.length;
     [...dots.children].forEach((d, k) => d.setAttribute("aria-current", k === cur));
   }
   function restart(){ clearInterval(timer); if (!paused && !document.hidden) timer = setInterval(() => show(cur + 1), 6000); }
