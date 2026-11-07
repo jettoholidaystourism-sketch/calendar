@@ -2809,6 +2809,7 @@ const PIC_RULES = [
   [/sail grand prix|boat show/i, "cat-sports-2"],
   [/\brun\b|marathon|triathlon|fitness challenge/i, "cat-sports-3"],
   [/ilt20|dubai 7s/i, "cat-sports-4"],
+  [/fright nights/i, "cat-comedy-theatre"],
   [/legoland|motiongate|ferrari world/i, "cat-family"],
   [/ripe market|makers market/i, "cat-shopping-2"],
   [/\bsale\b/i, "cat-shopping-offers"],
@@ -2831,7 +2832,7 @@ const PIC_RULES = [
 // Safe defaults by category; categories with no photo that fits most of their events get the designed card instead.
 const PIC_DEFAULT = {"Music":"cat-music", "Food":"cat-food", "Comedy & Theatre":"cat-comedy-theatre", "Nightlife":"cat-nightlife"};
 // Events whose subject none of the photos show (fights, basketball, padel, yoga, horse racing, board games, digital art...).
-const NO_PIC = /alone in the universe/i;
+const NO_PIC = /alone in the universe|very hungry caterpillar/i;   // the shared puppet picture shows the wrong characters
 function picFor(e){
   const text = e.t + " " + (e.v || "");
   if (NO_PIC.test(text)) return null;
