@@ -48,9 +48,23 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* masthead */
 .mast{position:relative;background:var(--navy);color:var(--mast-ink);overflow:hidden;isolation:isolate}
-.mast .wrap{position:relative;padding-block:40px 44px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.mast .wrap{position:relative;padding-block:40px 64px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 .mast-pic,.mast-pic img{position:absolute;inset:0;width:100%;height:100%;z-index:-2}
 .mast-pic img{object-fit:cover;object-position:center 72%}
+/* banner slider: slides cross-fade; the one showing has .on */
+.mast-pic .slide{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.4s ease}
+.mast-pic .slide.on{opacity:1}
+.mast-pic img.slide{object-position:center 60%}
+@media (prefers-reduced-motion:no-preference){.mast-pic .slide.on img,.mast-pic img.slide.on{animation:drift 9s ease-out both}}
+@keyframes drift{from{transform:scale(1.07)}to{transform:scale(1)}}
+.slide-ctrl{position:absolute;z-index:2;bottom:16px;right:max(16px, env(safe-area-inset-right, 0px));display:flex;align-items:center;gap:10px;color:#F3F0E6}
+.slide-label{font-size:12px;letter-spacing:.6px;color:#D9D4C3;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.dots{display:flex;gap:2px}
+.dots button{width:26px;height:26px;border:0;background:transparent;padding:0;cursor:pointer;display:grid;place-items:center}
+.dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(243,240,230,.45);transition:width .3s,background .3s}
+.dots button[aria-current="true"]::before{width:22px;border-radius:5px;background:var(--gold)}
+.slide-pause{width:30px;height:30px;border-radius:50%;border:1px solid rgba(243,240,230,.45);background:rgba(10,14,22,.35);color:#F3F0E6;display:grid;place-items:center;cursor:pointer;padding:0}
+.slide-pause svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
 .mast::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,14,22,.94) 0%,rgba(10,14,22,.82) 38%,rgba(10,14,22,.25) 78%,rgba(10,14,22,.1) 100%)}
 @media (min-width:900px){.mast .wrap{padding-block:64px 70px}}
 @media (max-width:640px){.mast-pic img{object-position:center bottom}.mast::after{background:linear-gradient(180deg,rgba(10,14,22,.9) 0%,rgba(10,14,22,.72) 55%,rgba(10,14,22,.35) 100%)}}
@@ -202,7 +216,9 @@ main .wrap{padding-block:8px 40px}
   .bar .wrap{gap:8px}
   .search{flex-basis:100%}
   #em{flex:1 1 auto;min-width:0}
-  .mast .wrap{padding-block:28px 34px;gap:14px}
+  .mast .wrap{padding-block:28px 58px;gap:14px}
+  .slide-label{display:none}
+  .mast-pic img.slide{object-position:center}
   .mast h1{font-size:clamp(30px,9vw,38px)}
   .hero-cta .cta,.hero-cta .ghost{flex:1 1 auto;text-align:center}
   .foot .ask{padding:9px 14px}
@@ -218,7 +234,19 @@ main .wrap{padding-block:8px 40px}
 
 
 <header class="mast">
-  <picture class="mast-pic"><source media="(max-width:640px)" srcset="img/hero-mobile.webp"><img src="img/hero-desktop.webp" alt="" width="1800" height="1186" fetchpriority="high"></picture>
+  <div class="mast-pic" id="slides" aria-hidden="true">
+    <picture class="slide on" data-label="Dubai skyline at night"><source media="(max-width:640px)" srcset="img/hero-mobile.webp"><img src="img/slide-1.webp" alt="" width="1820" height="1200" fetchpriority="high"></picture>
+    <img class="slide" data-src="img/slide-2.webp" data-label="Sunrise balloons over the desert" alt="" width="1536" height="949">
+    <img class="slide" data-src="img/slide-3.webp" data-label="Heritage festival nights" alt="" width="1536" height="917">
+    <img class="slide" data-src="img/slide-4.webp" data-label="Big arena concerts" alt="" width="1536" height="932">
+    <img class="slide" data-src="img/slide-5.webp" data-label="Brunch by the marina" alt="" width="1536" height="954">
+    <img class="slide" data-src="img/slide-6.webp" data-label="New Year fireworks" alt="" width="1536" height="918">
+  </div>
+  <div class="slide-ctrl" role="group" aria-label="Banner pictures">
+    <span class="slide-label" id="slideLabel">Dubai skyline at night</span>
+    <span class="dots" id="slideDots"></span>
+    <button type="button" class="slide-pause" id="slidePause" aria-label="Pause the banner pictures"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+  </div>
   <div class="wrap">
     <div class="brand"><img alt="JTH Tourism logo" src="data:image/webp;base64,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"><div><b>JTH Tourism</b><small>UAE Calendar</small></div></div>
     <span class="eyebrow">Your days in the Emirates, beautifully planned</span>
@@ -684,7 +712,8 @@ const EVENTS = [
 "time": "Thursdays 5pm–8pm",
 "cat": "Sports & Outdoors",
 "d": "Seven live races at golden hour, garden views over the track and a free Pick and Win game.",
-"ref": "J034"
+"ref": "J034",
+"img": "ev/J034"
 },
 {
 "t": "The Matter of Light (free exhibition)",
@@ -998,7 +1027,8 @@ const EVENTS = [
 "price": "From AED 45",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J063"
+"ref": "J063",
+"img": "ev/J063"
 },
 {
 "t": "In The Park Music Festival",
@@ -1166,7 +1196,8 @@ const EVENTS = [
 "v": "Coca-Cola Arena",
 "cat": "Sports & Outdoors",
 "d": "Title fight between the long-unbeaten champion and his knockout-artist challenger.",
-"ref": "J078"
+"ref": "J078",
+"img": "ev/J078"
 },
 {
 "t": "Re-inKarnation: Oru Maalai (Tamil live music)",
@@ -1189,7 +1220,8 @@ const EVENTS = [
 "price": "From AED 150",
 "cat": "Sports & Outdoors",
 "d": "First Middle East event, also featuring Tsarukyan vs Gracie. Under-16s must come with an adult aged 21 or over.",
-"ref": "J080"
+"ref": "J080",
+"img": "ev/J080"
 },
 {
 "t": "Sharjah Motor Fest",
@@ -1206,7 +1238,8 @@ const EVENTS = [
 "cat": "Festive",
 "fam": 1,
 "d": "Free car show series: Al Heera Beach on 14 Nov, Al Majaz on 12 Dec and Khorfakkan on 16 Jan 2027.",
-"ref": "J081"
+"ref": "J081",
+"img": "ev/J081"
 },
 {
 "t": "When Chai Met Toast",
@@ -1215,7 +1248,8 @@ const EVENTS = [
 "em": "Dubai",
 "v": "New Covent Garden Theatre, Dubai",
 "cat": "Music",
-"ref": "J082"
+"ref": "J082",
+"img": "ev/J082"
 },
 {
 "t": "Candlelight: From Mozart to Chopin",
@@ -1225,7 +1259,8 @@ const EVENTS = [
 "v": "Al Majlis, Mina A’Salam",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J083"
+"ref": "J083",
+"img": "ev/J083"
 },
 {
 "t": "Candlelight: Queen vs. ABBA",
@@ -1235,7 +1270,8 @@ const EVENTS = [
 "v": "Al Majlis, Mina A’Salam",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J084"
+"ref": "J084",
+"img": "ev/J084"
 },
 {
 "t": "NOMAD Abu Dhabi art fair",
@@ -1248,7 +1284,8 @@ const EVENTS = [
 "cat": "Culture & Art",
 "fam": 1,
 "d": "Collectible design and art fair. 18 Nov is invite-only.",
-"ref": "J085"
+"ref": "J085",
+"img": "ev/J085"
 },
 {
 "t": "Abu Dhabi International Boat Show",
@@ -1259,7 +1296,8 @@ const EVENTS = [
 "price": "From AED 35",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J086"
+"ref": "J086",
+"img": "ev/J086"
 },
 {
 "t": "Crazy Horse Paris - The Dubai Edition Tickets",
@@ -1270,7 +1308,8 @@ const EVENTS = [
 "price": "From AED 400",
 "cat": "Nightlife",
 "d": "Cabaret show for adults.",
-"ref": "J087"
+"ref": "J087",
+"img": "ev/J087"
 },
 {
 "t": "Frieze Abu Dhabi",
@@ -1281,7 +1320,8 @@ const EVENTS = [
 "price": "From AED 36.75",
 "cat": "Culture & Art",
 "fam": 1,
-"ref": "J088"
+"ref": "J088",
+"img": "ev/J088"
 },
 {
 "t": "World Art Dubai 2026",
@@ -1292,7 +1332,8 @@ const EVENTS = [
 "cat": "Culture & Art",
 "fam": 1,
 "d": "More than 300 artists and galleries, live performances, free workshops and interactive experiences.",
-"ref": "J089"
+"ref": "J089",
+"img": "ev/J089"
 },
 {
 "t": "American Ballet Theatre (Abu Dhabi Festival)",
@@ -1303,7 +1344,8 @@ const EVENTS = [
 "price": "From AED 125",
 "cat": "Music",
 "fam": 1,
-"ref": "J090"
+"ref": "J090",
+"img": "ev/J090"
 },
 {
 "t": "Anuv Jain",
@@ -1367,7 +1409,8 @@ const EVENTS = [
 "price": "AED 265 a day · AED 425 weekend",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J096"
+"ref": "J096",
+"img": "ev/J096"
 },
 {
 "t": "Fall Celebration: Beats of India",
@@ -1446,7 +1489,8 @@ const EVENTS = [
 "v": "Dubai International Stadium",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J103"
+"ref": "J103",
+"img": "ev/J103"
 },
 {
 "t": "Dubai Run",
@@ -1456,7 +1500,8 @@ const EVENTS = [
 "v": "Sheikh Zayed Road",
 "cat": "Sports & Outdoors",
 "fam": 1,
-"ref": "J104"
+"ref": "J104",
+"img": "ev/J104"
 },
 {
 "t": "ImagiNesan: musical stand-up comedy",
@@ -1501,7 +1546,8 @@ const EVENTS = [
 "v": "Talise Spa, Jumeirah Al Qasr",
 "price": "From AED 250",
 "cat": "Sports & Outdoors",
-"ref": "J108"
+"ref": "J108",
+"img": "ev/J108"
 },
 {
 "t": "Al Ain Hunting & Equestrian Exhibition",
@@ -1656,7 +1702,8 @@ const EVENTS = [
 "em": "Dubai",
 "v": "The Agenda",
 "cat": "Sports & Outdoors",
-"ref": "J122"
+"ref": "J122",
+"img": "ev/J122"
 },
 {
 "t": "Live & Kicking: Fabulously Festive Party",
@@ -2163,7 +2210,8 @@ const EVENTS = [
 "cat": "Festive",
 "fam": 1,
 "d": "Holiday village themed with Disney+ stories. Children aged 7–13 can register for Santa's Elf Academy.",
-"ref": "J167"
+"ref": "J167",
+"img": "ev/J167"
 },
 {
 "t": "Bohemia Presents Miguelle & Tons",
@@ -2173,7 +2221,8 @@ const EVENTS = [
 "v": "Bohemia Beach Club, Dubai",
 "price": "From AED 100",
 "cat": "Nightlife",
-"ref": "J168"
+"ref": "J168",
+"img": "ev/J168"
 },
 {
 "t": "Elf The Musical",
@@ -2192,7 +2241,8 @@ const EVENTS = [
 "cat": "Family",
 "fam": 1,
 "d": "West End cast in the festive musical based on the film Elf. 75 minutes. On 12–13 and 18–20 Dec.",
-"ref": "J169"
+"ref": "J169",
+"img": "ev/J169"
 },
 {
 "t": "Mahmut Orhan at Ushuaïa Dubai Harbour Experience",
@@ -2202,7 +2252,8 @@ const EVENTS = [
 "v": "Ushuaïa Dubai Harbour Experience",
 "price": "From AED 150",
 "cat": "Nightlife",
-"ref": "J170"
+"ref": "J170",
+"img": "ev/J170"
 },
 {
 "t": "The Jury Experience in Dubai",
@@ -2212,7 +2263,8 @@ const EVENTS = [
 "v": "Dubai Knowledge Park Auditorium",
 "price": "From AED 150",
 "cat": "Comedy & Theatre",
-"ref": "J171"
+"ref": "J171",
+"img": "ev/J171"
 },
 {
 "t": "The Legend Enrico Macias Live at Cultural Foundation",
@@ -2222,7 +2274,8 @@ const EVENTS = [
 "v": "Cultural Foundation",
 "price": "From AED 250",
 "cat": "Music",
-"ref": "J172"
+"ref": "J172",
+"img": "ev/J172"
 },
 {
 "t": "Community Run at The Ripe Market",
@@ -2233,7 +2286,8 @@ const EVENTS = [
 "price": "From AED 116",
 "cat": "Shopping & Offers",
 "fam": 1,
-"ref": "J173"
+"ref": "J173",
+"img": "ev/J173"
 },
 {
 "t": "Philippine Madrigal Singers",
@@ -2245,7 +2299,8 @@ const EVENTS = [
 "price": "AED 199 – 699",
 "cat": "Music",
 "d": "The Madz sing classical masterpieces, Filipino folk songs and OPM favourites.",
-"ref": "J174"
+"ref": "J174",
+"img": "ev/J174"
 },
 {
 "t": "Chicago the Musical",
@@ -2255,7 +2310,8 @@ const EVENTS = [
 "v": "Coca-Cola Arena",
 "cat": "Comedy & Theatre",
 "d": "The Broadway classic, live for five days.",
-"ref": "J175"
+"ref": "J175",
+"img": "ev/J175"
 },
 {
 "t": "Denis Matsuev in Concert",
@@ -2265,7 +2321,8 @@ const EVENTS = [
 "v": "Dubai Opera, Main Auditorium",
 "price": "From AED 350",
 "cat": "Music",
-"ref": "J176"
+"ref": "J176",
+"img": "ev/J176"
 },
 {
 "t": "Winter Clearance Sale",
@@ -2275,7 +2332,8 @@ const EVENTS = [
 "v": "Expo Centre Sharjah",
 "cat": "Shopping & Offers",
 "fam": 1,
-"ref": "J177"
+"ref": "J177",
+"img": "ev/J177"
 },
 {
 "t": "Abracadabra",
@@ -2286,7 +2344,8 @@ const EVENTS = [
 "price": "From AED 230",
 "cat": "Comedy & Theatre",
 "fam": 1,
-"ref": "J178"
+"ref": "J178",
+"img": "ev/J178"
 },
 {
 "t": "Disney's Encanto Live in Concert",
@@ -2297,7 +2356,8 @@ const EVENTS = [
 "price": "From AED 80",
 "cat": "Music",
 "fam": 1,
-"ref": "J179"
+"ref": "J179",
+"img": "ev/J179"
 },
 {
 "t": "Dopa World",
@@ -2307,7 +2367,8 @@ const EVENTS = [
 "v": "Jubilee Park, Expo City Dubai",
 "price": "From AED 245",
 "cat": "Music",
-"ref": "J180"
+"ref": "J180",
+"img": "ev/J180"
 },
 {
 "t": "Hariharan – The Mehfil Studio",
@@ -2316,7 +2377,8 @@ const EVENTS = [
 "em": "Dubai",
 "v": "Dubai World Trade Centre",
 "cat": "Music",
-"ref": "J181"
+"ref": "J181",
+"img": "ev/J181"
 },
 {
 "t": "Candlelight: Christmas Classics",
@@ -2326,7 +2388,8 @@ const EVENTS = [
 "v": "Al Nojoom Ballroom",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J182"
+"ref": "J182",
+"img": "ev/J182"
 },
 {
 "t": "Candlelight: Tribute to Fairuz",
@@ -2336,7 +2399,8 @@ const EVENTS = [
 "v": "Al Nojoom Ballroom",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J183"
+"ref": "J183",
+"img": "ev/J183"
 },
 {
 "t": "Dhafer Youssef at Abu Dhabi Festival 2026",
@@ -2346,7 +2410,8 @@ const EVENTS = [
 "v": "Louvre Abu Dhabi",
 "price": "From AED 225",
 "cat": "Music",
-"ref": "J184"
+"ref": "J184",
+"img": "ev/J184"
 },
 {
 "t": "Nitro Circus 2.0",
@@ -2357,7 +2422,8 @@ const EVENTS = [
 "cat": "Sports & Outdoors",
 "fam": 1,
 "d": "FMX and BMX riders and huge aerial tricks in the Liwa desert.",
-"ref": "J185"
+"ref": "J185",
+"img": "ev/J185"
 },
 {
 "t": "Disney's The Lion King Live in Concert",
@@ -2368,7 +2434,8 @@ const EVENTS = [
 "price": "From AED 80",
 "cat": "Music",
 "fam": 1,
-"ref": "J186"
+"ref": "J186",
+"img": "ev/J186"
 },
 {
 "t": "Jake Paul boxing fight (announced)",
@@ -2377,7 +2444,8 @@ const EVENTS = [
 "em": "Dubai",
 "cat": "Sports & Outdoors",
 "d": "Jake Paul's first professional fight in Dubai on Christmas Eve. Opponent and venue not yet announced.",
-"ref": "J187"
+"ref": "J187",
+"img": "ev/J187"
 },
 {
 "t": "Christmas Day lunch at The Els Club",
@@ -2390,7 +2458,8 @@ const EVENTS = [
 "cat": "Food",
 "fam": 1,
 "d": "Festive lunch at Big Easy or 261 Restaurant.",
-"ref": "J188"
+"ref": "J188",
+"img": "ev/J188"
 },
 {
 "t": "Candlelight: The Best of Hans Zimmer",
@@ -2400,7 +2469,8 @@ const EVENTS = [
 "v": "Al Majlis Madinat Jumeirah Mina A’Salam",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J189"
+"ref": "J189",
+"img": "ev/J189"
 },
 {
 "t": "Candlelight: Tribute to Ludovico Einaudi",
@@ -2410,7 +2480,8 @@ const EVENTS = [
 "v": "Al Majlis Madinat Jumeirah Mina A’Salam",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J190"
+"ref": "J190",
+"img": "ev/J190"
 },
 {
 "t": "Rahat Fateh Ali Khan & Shah Zaman Ali Khan - Once Upon a Time World Tour",
@@ -2420,7 +2491,8 @@ const EVENTS = [
 "v": "Coca-Cola Arena, Dubai",
 "price": "From AED 95",
 "cat": "Music",
-"ref": "J191"
+"ref": "J191",
+"img": "ev/J191"
 },
 {
 "t": "I Love Dubai NYE Rendezvous",
@@ -2429,7 +2501,8 @@ const EVENTS = [
 "em": "Dubai",
 "cat": "Festive",
 "fam": 1,
-"ref": "J192"
+"ref": "J192",
+"img": "ev/J192"
 },
 {
 "t": "Argy Presents Neworld - New Year's Eve at Ushuaïa Dubai Harbour Experience",
@@ -2439,7 +2512,8 @@ const EVENTS = [
 "v": "Ushuaïa Dubai Harbour Experience",
 "price": "From AED 150",
 "cat": "Nightlife",
-"ref": "J193"
+"ref": "J193",
+"img": "ev/J193"
 },
 {
 "t": "Katy Perry: New Year's Eve at Atlantis The Palm",
@@ -2448,7 +2522,8 @@ const EVENTS = [
 "em": "Dubai",
 "v": "Atlantis The Palm",
 "cat": "Music",
-"ref": "J194"
+"ref": "J194",
+"img": "ev/J194"
 },
 {
 "t": "New Year's Eve Under The Stars Gala Dinner Featuring Katy Perry In Dubai",
@@ -2458,7 +2533,8 @@ const EVENTS = [
 "v": "Atlantis, The Palm",
 "price": "From AED 6500",
 "cat": "Food",
-"ref": "J195"
+"ref": "J195",
+"img": "ev/J195"
 },
 {
 "t": "New Year's Eve gala dinner, Business Bay",
@@ -2471,7 +2547,8 @@ const EVENTS = [
 "cat": "Food",
 "fam": 1,
 "d": "Buffet dinner and live music with views of Dubai Canal and Burj Khalifa.",
-"ref": "J196"
+"ref": "J196",
+"img": "ev/J196"
 },
 {
 "t": "PAWSA | NEW YEAR’S EVE — PACHA ICONS",
@@ -2481,7 +2558,8 @@ const EVENTS = [
 "v": "Playa Pacha Beach Club, Dubai",
 "price": "From AED 300",
 "cat": "Nightlife",
-"ref": "J197"
+"ref": "J197",
+"img": "ev/J197"
 },
 {
 "t": "Vessbroz",
@@ -2491,7 +2569,8 @@ const EVENTS = [
 "v": "Cavo, Ramee Dream Hotel, Dubai",
 "price": "From AED 150",
 "cat": "Music",
-"ref": "J198"
+"ref": "J198",
+"img": "ev/J198"
 },
 {
 "t": "Swan Lake on Ice",
@@ -2502,7 +2581,8 @@ const EVENTS = [
 "cat": "Comedy & Theatre",
 "fam": 1,
 "d": "The Imperial Ice Stars perform Tchaikovsky's ballet on an ice stage.",
-"ref": "J199"
+"ref": "J199",
+"img": "ev/J199"
 },
 {
 "t": "Ebru Gündeş live",
@@ -2512,7 +2592,8 @@ const EVENTS = [
 "v": "Etihad Arena, Yas Island",
 "price": "Prices not yet published",
 "cat": "Music",
-"ref": "J200"
+"ref": "J200",
+"img": "ev/J200"
 },
 {
 "t": "IIFA Weekend 2027",
@@ -2522,7 +2603,8 @@ const EVENTS = [
 "v": "Etihad Arena, Yas Island",
 "cat": "Music",
 "d": "IIFA Digital Awards on 22 Jan with Himesh Reshammiya performing, then the IIFA Awards on 23 Jan.",
-"ref": "J201"
+"ref": "J201",
+"img": "ev/J201"
 },
 {
 "t": "RAK Half Marathon (20th edition)",
@@ -2532,7 +2614,8 @@ const EVENTS = [
 "v": "Al Marjan Island",
 "cat": "Sports & Outdoors",
 "d": "Coastal half marathon; registration is open. Make a weekend of it in Ras Al Khaimah.",
-"ref": "J202"
+"ref": "J202",
+"img": "ev/J202"
 },
 {
 "t": "Sitar for Mental Health: Rishab Rikhiram Sharma",
@@ -2542,7 +2625,8 @@ const EVENTS = [
 "v": "Coca-Cola Arena",
 "cat": "Music",
 "d": "Sitar concert blending classical sound with a modern take on wellbeing.",
-"ref": "J203"
+"ref": "J203",
+"img": "ev/J203"
 },
 {
 "t": "Sponge Cola with Karylle",
@@ -2552,7 +2636,8 @@ const EVENTS = [
 "v": "The Agenda, Dubai Media City",
 "price": "Early-bird tickets on sale",
 "cat": "Music",
-"ref": "J204"
+"ref": "J204",
+"img": "ev/J204"
 },
 {
 "t": "UNTOLD Festival Dubai",
@@ -2562,7 +2647,8 @@ const EVENTS = [
 "v": "Dubai Parks and Resorts",
 "cat": "Nightlife",
 "d": "One of the world's best-known dance music festivals, with big stage design and headliners.",
-"ref": "J205"
+"ref": "J205",
+"img": "ev/J205"
 },
 {
 "t": "UNIFYD music festival",
@@ -2572,7 +2658,8 @@ const EVENTS = [
 "v": "Etihad Live, Abu Dhabi",
 "cat": "Music",
 "d": "Arijit Singh, Karan Aujla, Sonu Nigam and more on one day.",
-"ref": "J206"
+"ref": "J206",
+"img": "ev/J206"
 },
 {
 "t": "Hearts of Veeramani (Tamil concert)",
@@ -2582,7 +2669,8 @@ const EVENTS = [
 "v": "Dubai Folklore Theatre",
 "cat": "Music",
 "d": "Rescheduled to 28 March 2027.",
-"ref": "J207"
+"ref": "J207",
+"img": "ev/J207"
 },
 {
 "t": "World of Dance Dubai (first edition)",
@@ -2894,6 +2982,31 @@ document.getElementById("pbFilters").addEventListener("click", () => {
   document.querySelector(".bar").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
   setTimeout(() => document.getElementById("q").focus({preventScroll: true}), 350);
 });
+
+// Banner slider: a new picture every 6 seconds; stops for reduced motion, a hidden tab, or the pause button.
+(() => {
+  const slides = [...document.querySelectorAll("#slides .slide")];
+  const dots = document.getElementById("slideDots"), label = document.getElementById("slideLabel"), pause = document.getElementById("slidePause");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let cur = 0, timer = null, paused = still;
+  const load = el => { const img = el.tagName === "IMG" ? el : el.querySelector("img"); if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; } };
+  slides.forEach((s, i) => { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Show banner picture " + (i + 1) + ": " + s.dataset.label); b.addEventListener("click", () => { show(i); restart(); }); dots.appendChild(b); });
+  function show(i){
+    slides[cur].classList.remove("on");
+    cur = (i + slides.length) % slides.length;
+    load(slides[cur]); slides[cur].classList.add("on");
+    load(slides[(cur + 1) % slides.length]);
+    label.textContent = slides[cur].dataset.label;
+    [...dots.children].forEach((d, k) => d.setAttribute("aria-current", k === cur));
+  }
+  function restart(){ clearInterval(timer); if (!paused && !document.hidden) timer = setInterval(() => show(cur + 1), 6000); }
+  const setPaused = p => { paused = p; pause.setAttribute("aria-label", p ? "Play the banner pictures" : "Pause the banner pictures");
+    pause.innerHTML = p ? '<svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>'; restart(); };
+  pause.addEventListener("click", () => setPaused(!paused));
+  document.addEventListener("visibilitychange", restart);
+  show(0); setPaused(paused);
+  addEventListener("load", () => load(slides[1]));
+})();
 
 // Welcome pop-up: once per visit (browser tab session); shows every time if storage is blocked.
 const welcome = document.getElementById("welcome");
